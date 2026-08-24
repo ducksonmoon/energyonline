@@ -41,3 +41,14 @@ export async function updateStoreSettings(
   revalidatePath("/admin/settings");
   return { success: true };
 }
+
+export async function updateSalesPauseSettings(salesPaused: boolean, salesPausedMessage: string) {
+  await requireAdmin();
+  await db.storeSettings.upsert({
+    where: { id: 1 },
+    update: { salesPaused, salesPausedMessage },
+    create: { id: 1, salesPaused, salesPausedMessage },
+  });
+  revalidatePath("/");
+  revalidatePath("/admin/settings");
+}

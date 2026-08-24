@@ -134,7 +134,13 @@ export function StorefrontApp({
 
       <ProductDetailPanel product={selectedProduct} onClose={() => setSelectedProductId(null)} />
       <MiniCart onClick={() => setCartOpen(true)} />
-      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
+      <CartDrawer
+        open={cartOpen}
+        onOpenChange={setCartOpen}
+        salesPaused={settings.salesPaused}
+        salesPausedMessage={settings.salesPausedMessage}
+        instagramHandle={settings.instagramHandle}
+      />
     </div>
   );
 }
