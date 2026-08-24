@@ -1,0 +1,63 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      APP_DIR: ${{ vars.APP_DIR || '/home/ubuntu/apps/energyonline' }}
+      APP_NAME: ${{ vars.APP_NAME || 'energyonline' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+
+      - name: Trust server host key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Ensure app directory exists
+        run: ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "mkdir -p '$APP_DIR'"
+
+      - name: Sync app files
+        run: |
+          rsync -az --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.next' \
+            --exclude='.env' \
+            --exclude='.seeded' \
+            --exclude='dev.db' \
+            --exclude='dev.db-journal' \
+            --exclude='public/uploads' \
+            --exclude='src/generated' \
+            ./ "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:$APP_DIR/"
+
+      - name: Write server .env
+        run: |
+          ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "cat > '$APP_DIR/.env'" <<EOF
+          NODE_ENV=production
+          DATABASE_URL=file:./dev.db
+          SESSION_SECRET=${{ secrets.SESSION_SECRET }}
+          ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          EOF
+
+      - name: Run remote deploy script
+        run: |
+          ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" \
+            "APP_DIR='$APP_DIR' APP_NAME='$APP_NAME' bash -s" < deploy/remote-deploy.sh

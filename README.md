@@ -55,3 +55,23 @@ Open [http://localhost:3000](http://localhost:3000) for the storefront and
 npm run build
 npm run start
 ```
+
+## Deploying
+
+Pushes to `master` trigger `.github/workflows/deploy.yml`, which rsyncs the repo to a server over
+SSH, then runs `deploy/remote-deploy.sh` there: installs Node 20 / pm2 if missing, `npm ci`,
+`prisma generate` + `prisma db push`, seeds the DB on first deploy only, `npm run build`, and
+(re)starts the app under pm2 as `energyonline`. You can also run it manually from the **Actions**
+tab (`workflow_dispatch`).
+
+Configure these before the first run:
+
+- **Repository secrets** (Settings → Secrets and variables → Actions → *Secrets*):
+  `SERVER_HOST`, `SERVER_USER`, `SERVER_SSH_KEY` (private key with access to the server),
+  `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`.
+- **Repository variables** (same page, *Variables* tab, optional): `APP_DIR` (default
+  `/home/ubuntu/apps/energyonline`), `APP_NAME` (default `energyonline`).
+
+The server itself only needs SSH access and `sudo` for the (idempotent) Node/pm2 install steps —
+everything else is handled by the workflow. The app listens on port 3000 under pm2; put a reverse
+proxy (e.g. nginx) in front of it for a domain and TLS.
