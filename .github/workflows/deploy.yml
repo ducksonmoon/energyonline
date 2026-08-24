@@ -19,6 +19,8 @@ jobs:
       SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=20
       PUBLIC_DOMAIN: ${{ vars.PUBLIC_DOMAIN || '' }}
       CERTBOT_EMAIL: ${{ vars.CERTBOT_EMAIL || '' }}
+      GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID || '' }}
+      CLARITY_PROJECT_ID: ${{ vars.CLARITY_PROJECT_ID || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,6 +62,8 @@ jobs:
           SESSION_SECRET=${{ secrets.SESSION_SECRET }}
           ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}
           ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          NEXT_PUBLIC_GA_MEASUREMENT_ID=$GA_MEASUREMENT_ID
+          NEXT_PUBLIC_CLARITY_PROJECT_ID=$CLARITY_PROJECT_ID
           EOF
 
       - name: Run remote deploy script
