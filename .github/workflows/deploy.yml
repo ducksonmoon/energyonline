@@ -16,6 +16,7 @@ jobs:
       APP_DIR: ${{ vars.APP_DIR || '/home/ubuntu/apps/energyonline' }}
       APP_NAME: ${{ vars.APP_NAME || 'energyonline' }}
       SERVER_PORT: ${{ vars.SERVER_PORT || '22' }}
+      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=20
       PUBLIC_DOMAIN: ${{ vars.PUBLIC_DOMAIN || '' }}
       CERTBOT_EMAIL: ${{ vars.CERTBOT_EMAIL || '' }}
     steps:
@@ -33,12 +34,12 @@ jobs:
           ssh-keyscan -p "$SERVER_PORT" -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Ensure app directory exists
-        run: ssh -p "$SERVER_PORT" "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "mkdir -p '$APP_DIR'"
+        run: ssh -p "$SERVER_PORT" $SSH_OPTS "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "mkdir -p '$APP_DIR'"
 
       - name: Sync app files
         run: |
           rsync -az --delete \
-            -e "ssh -p $SERVER_PORT" \
+            -e "ssh -p $SERVER_PORT $SSH_OPTS" \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='node_modules' \
@@ -53,7 +54,7 @@ jobs:
 
       - name: Write server .env
         run: |
-          ssh -p "$SERVER_PORT" "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "cat > '$APP_DIR/.env'" <<EOF
+          ssh -p "$SERVER_PORT" $SSH_OPTS "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "cat > '$APP_DIR/.env'" <<EOF
           NODE_ENV=production
           DATABASE_URL=file:./dev.db
           SESSION_SECRET=${{ secrets.SESSION_SECRET }}
@@ -63,5 +64,5 @@ jobs:
 
       - name: Run remote deploy script
         run: |
-          ssh -p "$SERVER_PORT" "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" \
+          ssh -p "$SERVER_PORT" $SSH_OPTS "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" \
             "APP_DIR='$APP_DIR' APP_NAME='$APP_NAME' PUBLIC_DOMAIN='$PUBLIC_DOMAIN' CERTBOT_EMAIL='$CERTBOT_EMAIL' bash -s" < deploy/remote-deploy.sh
