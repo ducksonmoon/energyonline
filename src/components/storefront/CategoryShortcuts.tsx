@@ -105,7 +105,7 @@ export function CategoryShortcuts({
   }
 
   return (
-    <div className="px-4 sm:px-6 pb-7 sm:pb-11 pt-2 max-w-[1100px] mx-auto relative">
+    <div className="px-4 sm:px-6 pb-7 sm:pb-11 pt-2 max-w-[1280px] mx-auto relative">
       <div
         ref={scrollerRef}
         data-noscrollbar

@@ -39,7 +39,7 @@ export function AvailabilityBanner({
 
   return (
     <div className="bg-[var(--ink)] text-[var(--bg)] px-5 py-6 relative overflow-hidden">
-      <RevealOnScroll className="max-w-[960px] mx-auto flex items-center gap-4 flex-wrap">
+      <RevealOnScroll className="max-w-[1280px] mx-auto flex items-center gap-4 flex-wrap">
         <div className="text-[13px] text-[rgba(246,242,236,.6)]">پایان تخفیف‌های فعلی:</div>
         <div className="font-extrabold text-lg tracking-wide text-[var(--accent)]">{countdownText}</div>
       </RevealOnScroll>

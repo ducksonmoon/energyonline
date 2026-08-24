@@ -13,7 +13,7 @@ export function CategoryNav({
 }) {
   return (
     <div id="grid" className="px-4 sm:px-5 pt-7 sm:pt-11">
-      <div className="max-w-[1100px] mx-auto flex gap-2 sm:gap-2.5 flex-wrap justify-center">
+      <div className="max-w-[1280px] mx-auto flex gap-2 sm:gap-2.5 flex-wrap justify-center">
         {categories.map((c) => {
           const isActive = active === c.key;
           return (
