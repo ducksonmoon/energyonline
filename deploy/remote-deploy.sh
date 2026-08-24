@@ -38,7 +38,7 @@ fi
 
 npm ci
 npx prisma generate
-npx prisma db push --skip-generate
+npx prisma db push
 
 if [ ! -f .seeded ]; then
   echo "First deploy: seeding database..."
