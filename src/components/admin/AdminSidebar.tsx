@@ -13,6 +13,7 @@ const NAV = [
   { href: "/admin/discounts", label: "تخفیف‌ها" },
   { href: "/admin/special-offer", label: "روز تخفیف ویژه" },
   { href: "/admin/categories", label: "دسته‌بندی‌ها" },
+  { href: "/admin/employees", label: "کارکنان" },
   { href: "/admin/settings", label: "تنظیمات" },
 ];
 

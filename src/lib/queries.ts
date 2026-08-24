@@ -18,6 +18,10 @@ export async function getCategories() {
   return db.category.findMany({ orderBy: { sortOrder: "asc" } });
 }
 
+export async function getAdminUsers() {
+  return db.adminUser.findMany({ select: { id: true, username: true }, orderBy: { username: "asc" } });
+}
+
 export async function getProductsWithRelations(): Promise<ProductWithRelations[]> {
   return db.product.findMany({
     include: {
