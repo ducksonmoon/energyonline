@@ -51,6 +51,7 @@ jobs:
             --exclude='.lockfile-hash' \
             --exclude='dev.db' \
             --exclude='dev.db-journal' \
+            --exclude='backups' \
             --exclude='public/uploads' \
             --exclude='src/generated' \
             ./ "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:$APP_DIR/"

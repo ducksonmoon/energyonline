@@ -24,13 +24,6 @@ export async function sellItem(productId: string, size: string): Promise<SellRes
 
   try {
     const result = await db.$transaction(async (tx) => {
-      const sizeRow = await tx.productSize.findUnique({
-        where: { productId_size: { productId, size } },
-      });
-      if (!sizeRow || sizeRow.stock <= 0) {
-        throw new Error("این سایز موجود نیست");
-      }
-
       const product = await tx.product.findUnique({ where: { id: productId } });
       if (!product) throw new Error("محصول یافت نشد");
 
@@ -38,12 +31,25 @@ export async function sellItem(productId: string, size: string): Promise<SellRes
       const flashActive = settings ? isFlashSaleActive(settings) : false;
       const price = effectivePrice(product, flashActive);
 
-      await tx.productSize.update({ where: { id: sizeRow.id }, data: { stock: { decrement: 1 } } });
+      // Conditional decrement (only rows where stock is still > 0), not a
+      // read-then-write: if two employees sell the last unit of the same
+      // size at the same moment, only one UPDATE can match and win — the
+      // other gets count 0 and the "not available" error below, instead of
+      // both succeeding and taking stock negative.
+      const { count } = await tx.productSize.updateMany({
+        where: { productId, size, stock: { gt: 0 } },
+        data: { stock: { decrement: 1 } },
+      });
+      if (count === 0) throw new Error("این سایز موجود نیست");
+
+      const sizeRow = await tx.productSize.findUniqueOrThrow({
+        where: { productId_size: { productId, size } },
+      });
       const sale = await tx.sale.create({
         data: { productId, size, price, soldBy: session.username },
       });
 
-      return { sale, productName: product.name, remainingStock: sizeRow.stock - 1 };
+      return { sale, productName: product.name, remainingStock: sizeRow.stock };
     });
 
     revalidatePath("/");

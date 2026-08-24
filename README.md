@@ -131,3 +131,12 @@ What would meaningfully help further, and needs your call (cost/infra decisions,
    the edge and absorbs traffic spikes without the origin server seeing most of the requests at
    all. This is the standard, low-effort way to protect a small origin server during a launch, but
    needs a domain pointed through Cloudflare's nameservers first (see `PUBLIC_DOMAIN` above).
+
+## Backups
+
+Every deploy sets up a daily cron job (4am server time) that hot-backs-up the SQLite database with
+`scripts/backup-db.mjs` — safe to run while the app is live — gzips it, and keeps the last 14 days
+in `backups/` on the server (excluded from deploy syncs, so it survives every deploy). This is the
+single point of failure for the whole store (every product, sale, and price lives in that one
+file), so it's on by default rather than optional. To restore: `gunzip` the backup and copy it over
+`dev.db` (with the app stopped), or point `DATABASE_URL` at it directly to inspect first.
