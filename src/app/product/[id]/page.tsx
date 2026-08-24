@@ -7,7 +7,10 @@ import { toProductVM } from "@/lib/productViewModel";
 import { absoluteUrl } from "@/lib/site";
 import { ProductDetailContent } from "@/components/storefront/ProductDetailContent";
 
-export const dynamic = "force-dynamic";
+// Same reasoning as the homepage — cached for up to a minute, invalidated
+// instantly on real changes via revalidatePath in the product/sell/discount
+// actions.
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: PageProps<"/product/[id]">): Promise<Metadata> {
   const { id } = await params;

@@ -30,6 +30,7 @@ export async function setProductFlashPrice(productId: string, flashPrice: number
   await requireAdmin();
   await db.product.update({ where: { id: productId }, data: { flashPrice } });
   revalidatePath("/");
+  revalidatePath(`/product/${productId}`);
   revalidatePath("/admin/special-offer");
   revalidatePath("/admin/products");
 }

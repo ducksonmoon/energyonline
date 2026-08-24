@@ -91,7 +91,38 @@ if [ ! -f "$SSL_DIR/selfsigned.crt" ]; then
     -subj "/CN=${PUBLIC_DOMAIN:-$APP_NAME}"
 fi
 
+# Static page nginx serves directly (no Node involved) if the app becomes
+# unreachable or too slow to respond — so an overloaded backend shows
+# visitors a calm "back in a moment" message instead of a broken connection.
+MAINTENANCE_DIR=/var/www/energyonline-maintenance
+sudo mkdir -p "$MAINTENANCE_DIR"
+sudo tee "$MAINTENANCE_DIR/maintenance.html" >/dev/null <<'HTML'
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>انرژی</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:#f6f2ec; color:#141311; font-family:Tahoma,Arial,sans-serif; text-align:center; padding:24px; }
+  .box { max-width:420px; }
+  h1 { font-size:22px; margin:0 0 12px; }
+  p { font-size:14px; line-height:1.9; color:rgba(20,19,17,.65); margin:0; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>انرژی</h1>
+    <p>سایت الان شلوغه، چند لحظه دیگه دوباره امتحان کن.</p>
+  </div>
+</body>
+</html>
+HTML
+
 sudo tee /etc/nginx/sites-available/energyonline >/dev/null <<NGINX
+limit_req_zone \$binary_remote_addr zone=energyonline:10m rate=30r/s;
+
 server {
     listen 80;
     server_name _;
@@ -107,9 +138,27 @@ server {
 
     client_max_body_size 10m;
 
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+
+    error_page 502 503 504 /maintenance.html;
+    location = /maintenance.html {
+        root $MAINTENANCE_DIR;
+        internal;
+    }
+
     location / {
+        # Generous on purpose: this only guards against one source hammering
+        # the server (bots, refresh-spam), not real visitors — Next.js
+        # prefetches every product link that scrolls into view, so a single
+        # real page load can easily fire dozens of requests in a couple of
+        # seconds. Overall traffic from many different visitors at once
+        # isn't something per-IP limits address at all (see README).
+        limit_req zone=energyonline burst=100 nodelay;
         proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 15s;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;

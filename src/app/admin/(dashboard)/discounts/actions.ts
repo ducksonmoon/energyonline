@@ -13,6 +13,7 @@ export async function setProductDiscount(productId: string, discountPrice: numbe
   await requireAdmin();
   await db.product.update({ where: { id: productId }, data: { discountPrice } });
   revalidatePath("/");
+  revalidatePath(`/product/${productId}`);
   revalidatePath("/admin/discounts");
   revalidatePath("/admin/products");
 }

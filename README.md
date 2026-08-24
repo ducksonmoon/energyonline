@@ -98,3 +98,36 @@ links, the sitemap, and social-share image previews are otherwise relative/broke
 derived automatically from `PUBLIC_DOMAIN` (see TLS above), so **SEO only really works once you
 have a real domain** — a self-signed IP address won't rank or preview properly regardless of the
 metadata.
+
+## Traffic & reliability
+
+The server is a single small VPS (1 vCPU / 1GB RAM), so a launch-day traffic spike is a real risk.
+**Load balancing across multiple app servers isn't the fix** — everything is stored in one SQLite
+file (see "Getting started" above), and SQLite doesn't support concurrent writes from multiple
+hosts, so running the app on more than one server would need a database migration (to Postgres or
+similar) first. That's a much bigger, riskier change than makes sense to rush before a launch.
+
+What's actually in place instead:
+
+- **Page caching** — the storefront and product pages are cached for up to 60 seconds
+  (`export const revalidate = 60`), so repeated visitors hit a cached response instead of a fresh
+  database query + render every time. Admin actions (sales, price/stock edits) call
+  `revalidatePath` on every change, so real updates still show up immediately — the 60s is just a
+  ceiling for anything that isn't explicitly invalidated.
+- **Rate limiting** (nginx, 30 req/s per IP, generous burst) — blunts a single abusive source (bot,
+  refresh-spam) hammering the server; it does not throttle overall traffic from many different
+  visitors, since each gets its own independent limit.
+- **A friendly fallback page** — if the app becomes unreachable or too slow (nginx gives it 15s),
+  nginx serves a static "site's busy, try again shortly" page directly instead of visitors seeing a
+  broken connection.
+
+What would meaningfully help further, and needs your call (cost/infra decisions, not code):
+
+1. **Upgrade the VPS plan** (more RAM/vCPU) — the most direct fix. This server has visibly
+   struggled under load already (a routine deploy once overloaded it badly enough that SSH itself
+   stopped responding); 1GB RAM is genuinely tight for concurrent real traffic on top of the app
+   itself. 2GB+ would meaningfully raise the ceiling.
+2. **Put the site behind Cloudflare** (free tier) once you have a real domain — it caches pages at
+   the edge and absorbs traffic spikes without the origin server seeing most of the requests at
+   all. This is the standard, low-effort way to protect a small origin server during a launch, but
+   needs a domain pointed through Cloudflare's nameservers first (see `PUBLIC_DOMAIN` above).
