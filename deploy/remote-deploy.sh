@@ -36,7 +36,20 @@ if [ "$(swapon --show=NAME --noheadings 2>/dev/null | wc -l)" -eq 0 ] && [ ! -f 
   echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab >/dev/null
 fi
 
-npm ci
+# npm ci always wipes and reinstalls node_modules from scratch, recompiling
+# better-sqlite3's native binding every time (several minutes on this
+# server's single vCPU, and has previously overloaded it badly enough that
+# ssh itself stopped responding). Skip it when the lockfile hasn't actually
+# changed since the last deploy.
+LOCK_HASH="$(sha256sum package-lock.json | cut -d' ' -f1)"
+if [ ! -d node_modules ] || [ "$(cat .lockfile-hash 2>/dev/null)" != "$LOCK_HASH" ]; then
+  echo "Dependencies changed (or missing) — running npm ci..."
+  npm ci
+  echo "$LOCK_HASH" > .lockfile-hash
+else
+  echo "Dependencies unchanged since last deploy — skipping npm ci."
+fi
+
 npx prisma generate
 npx prisma db push
 

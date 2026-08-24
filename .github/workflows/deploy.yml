@@ -16,7 +16,7 @@ jobs:
       APP_DIR: ${{ vars.APP_DIR || '/home/ubuntu/apps/energyonline' }}
       APP_NAME: ${{ vars.APP_NAME || 'energyonline' }}
       SERVER_PORT: ${{ vars.SERVER_PORT || '22' }}
-      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=20
+      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=40
       PUBLIC_DOMAIN: ${{ vars.PUBLIC_DOMAIN || '' }}
       CERTBOT_EMAIL: ${{ vars.CERTBOT_EMAIL || '' }}
       GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID || '' }}
@@ -48,6 +48,7 @@ jobs:
             --exclude='.next' \
             --exclude='.env' \
             --exclude='.seeded' \
+            --exclude='.lockfile-hash' \
             --exclude='dev.db' \
             --exclude='dev.db-journal' \
             --exclude='public/uploads' \
