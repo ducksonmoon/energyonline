@@ -61,8 +61,11 @@ npm run start
 Pushes to `master` trigger `.github/workflows/deploy.yml`, which rsyncs the repo to a server over
 SSH, then runs `deploy/remote-deploy.sh` there: installs Node 20 / pm2 if missing, `npm ci`,
 `prisma generate` + `prisma db push`, seeds the DB on first deploy only, `npm run build`, and
-(re)starts the app under pm2 as `energyonline`. You can also run it manually from the **Actions**
-tab (`workflow_dispatch`).
+(re)starts the app under pm2 as `energyonline` (bound to `127.0.0.1` only). It also installs and
+configures **nginx as a TLS-terminating reverse proxy** in front of it — this isn't cosmetic: the
+admin session cookie is `Secure`-only in production, which browsers won't store over plain HTTP on
+a public host, so without TLS the admin panel can't stay logged in. You can also run the workflow
+manually from the **Actions** tab (`workflow_dispatch`).
 
 Configure these before the first run:
 
@@ -70,8 +73,14 @@ Configure these before the first run:
   `SERVER_HOST`, `SERVER_USER`, `SERVER_SSH_KEY` (private key with access to the server),
   `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`.
 - **Repository variables** (same page, *Variables* tab, optional): `APP_DIR` (default
-  `/home/ubuntu/apps/energyonline`), `APP_NAME` (default `energyonline`).
+  `/home/ubuntu/apps/energyonline`), `APP_NAME` (default `energyonline`), `SERVER_PORT` (default
+  `22`), `PUBLIC_DOMAIN` / `CERTBOT_EMAIL` (see below).
 
-The server itself only needs SSH access and `sudo` for the (idempotent) Node/pm2 install steps —
-everything else is handled by the workflow. The app listens on port 3000 under pm2; put a reverse
-proxy (e.g. nginx) in front of it for a domain and TLS.
+The server itself only needs SSH access and `sudo` for the (idempotent) install steps — everything
+else is handled by the workflow.
+
+**TLS certificate**: with no `PUBLIC_DOMAIN` set, nginx serves a self-signed certificate — HTTPS
+works immediately (so cookies/logins work) but browsers show an untrusted-certificate warning,
+since it isn't issued by a real CA. Once you have a domain pointed at the server's IP, set the
+`PUBLIC_DOMAIN` repository variable (and optionally `CERTBOT_EMAIL`) and re-run the workflow: it'll
+request a trusted Let's Encrypt certificate via certbot and switch nginx over to it automatically.

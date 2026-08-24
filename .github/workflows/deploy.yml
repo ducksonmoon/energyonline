@@ -16,6 +16,8 @@ jobs:
       APP_DIR: ${{ vars.APP_DIR || '/home/ubuntu/apps/energyonline' }}
       APP_NAME: ${{ vars.APP_NAME || 'energyonline' }}
       SERVER_PORT: ${{ vars.SERVER_PORT || '22' }}
+      PUBLIC_DOMAIN: ${{ vars.PUBLIC_DOMAIN || '' }}
+      CERTBOT_EMAIL: ${{ vars.CERTBOT_EMAIL || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,4 +64,4 @@ jobs:
       - name: Run remote deploy script
         run: |
           ssh -p "$SERVER_PORT" "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" \
-            "APP_DIR='$APP_DIR' APP_NAME='$APP_NAME' bash -s" < deploy/remote-deploy.sh
+            "APP_DIR='$APP_DIR' APP_NAME='$APP_NAME' PUBLIC_DOMAIN='$PUBLIC_DOMAIN' CERTBOT_EMAIL='$CERTBOT_EMAIL' bash -s" < deploy/remote-deploy.sh

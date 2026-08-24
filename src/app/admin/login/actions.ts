@@ -3,7 +3,13 @@
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { verifyPassword, createSession, checkLoginRateLimit, recordFailedLogin, clearLoginAttempts } from "@/lib/auth";
+import {
+  verifyPasswordConstantTime,
+  createSession,
+  checkLoginRateLimit,
+  recordFailedLogin,
+  clearLoginAttempts,
+} from "@/lib/auth";
 import { toFa } from "@/lib/format";
 
 const schema = z.object({
@@ -31,7 +37,8 @@ export async function loginAction(_prevState: LoginState, formData: FormData): P
   }
 
   const user = await db.adminUser.findUnique({ where: { username } });
-  if (!user || !(await verifyPassword(password, user.passwordHash))) {
+  const passwordOk = await verifyPasswordConstantTime(password, user?.passwordHash ?? null);
+  if (!user || !passwordOk) {
     recordFailedLogin(username);
     return { error: "نام کاربری یا رمز عبور اشتباه است" };
   }

@@ -20,6 +20,18 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
+/**
+ * Precomputed bcrypt hash with no matching plaintext, used to keep login
+ * comparison time constant when the username doesn't exist — otherwise a
+ * missing user short-circuits before bcrypt runs, leaking valid usernames
+ * via response timing.
+ */
+const DUMMY_PASSWORD_HASH = "$2b$10$19I3xEYqFyX6vtD2rHUSwec4myUrXs2JGr7/EmLMh0Pb/kabDcDwa";
+
+export async function verifyPasswordConstantTime(password: string, hash: string | null): Promise<boolean> {
+  return bcrypt.compare(password, hash ?? DUMMY_PASSWORD_HASH);
+}
+
 export type SessionPayload = { sub: string; username: string };
 
 export async function createSessionToken(payload: SessionPayload): Promise<string> {
