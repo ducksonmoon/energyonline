@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import type { MouseEvent } from "react";
 import type { ProductVM } from "@/lib/productViewModel";
 import { toFa } from "@/lib/format";
 
@@ -23,7 +25,15 @@ export function ProductCard({
       viewport={{ once: true, amount: 0.12 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: delay / 1000 }}
     >
-      <button onClick={onOpen} className="cursor-pointer text-right w-full">
+      <Link
+        href={`/product/${product.id}`}
+        onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+          if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+          onOpen();
+        }}
+        className="cursor-pointer text-right w-full block"
+      >
         <div className="relative aspect-[4/5] rounded-md bg-[var(--bg-alt)] flex items-center justify-center text-[var(--ink-soft)] overflow-hidden">
           {loaded ? (
             <>
@@ -78,7 +88,7 @@ export function ProductCard({
             <div className="text-xs text-[var(--ink-soft)] line-through mt-0.5">{product.originalPriceFa}</div>
           )}
         </div>
-      </button>
+      </Link>
     </motion.div>
   );
 }

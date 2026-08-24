@@ -125,6 +125,8 @@ export function StorefrontApp({
       <InstagramCta instagramHandle={settings.instagramHandle} />
       <SiteFooter
         address={settings.address}
+        phone={settings.phone}
+        phoneTurkey={settings.phoneTurkey}
         hoursWeekday={settings.hoursWeekday}
         hoursThursday={settings.hoursThursday}
         hoursFriday={settings.hoursFriday}

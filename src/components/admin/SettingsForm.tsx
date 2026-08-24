@@ -66,6 +66,24 @@ export function SettingsForm({ settings }: { settings: StoreSettings }) {
         <Input id="address" name="address" defaultValue={settings.address} required />
       </div>
 
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="phone">تلفن فروشگاه</Label>
+          <Input id="phone" name="phone" defaultValue={settings.phone} required dir="ltr" className="text-right" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="phoneTurkey">تلفن سفارش از ترکیه</Label>
+          <Input
+            id="phoneTurkey"
+            name="phoneTurkey"
+            defaultValue={settings.phoneTurkey}
+            required
+            dir="ltr"
+            className="text-right"
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="hoursWeekday">ساعت کاری (شنبه تا چهارشنبه)</Label>

@@ -90,3 +90,11 @@ request a trusted Let's Encrypt certificate via certbot and switch nginx over to
 [analytics.google.com](https://analytics.google.com), looks like `G-XXXXXXXXXX`) and/or
 `CLARITY_PROJECT_ID` (from [clarity.microsoft.com](https://clarity.microsoft.com)) and re-run the
 workflow. Both only load on the public storefront, never in `/admin`.
+
+**SEO**: each product has its own indexable page at `/product/[id]` (proper `<title>`/description,
+Open Graph + Twitter cards, JSON-LD `Product` schema), plus `/sitemap.xml` and `/robots.txt`
+(`/admin` is excluded from both). All of it needs an absolute site URL to be correct — canonical
+links, the sitemap, and social-share image previews are otherwise relative/broken. That URL is
+derived automatically from `PUBLIC_DOMAIN` (see TLS above), so **SEO only really works once you
+have a real domain** — a self-signed IP address won't rank or preview properly regardless of the
+metadata.
