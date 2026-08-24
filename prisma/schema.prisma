@@ -84,6 +84,11 @@ model StoreSettings {
   flashSaleTitle      String    @default("تا ۷۰٪ تخفیف")
   flashSaleSubtitle   String    @default("فقط برای امروز، روی تعداد محدود")
   flashSaleBannerText String    @default("روز تخفیف ویژه انرژی — تا ۷۰٪ تخفیف، فقط امروز")
+
+  /// When true, browsing/cart stay fully usable but the final checkout step
+  /// is replaced with salesPausedMessage instead of the Instagram-DM CTA.
+  salesPaused        Boolean @default(true)
+  salesPausedMessage String  @default("متاسفیم درحال حاضر امکان فروش از طریق سایت وجود ندارد، به زودی مشکل حل می‌شود.\nمی‌توانید سفارش را از طریق پیج ما یا خرید حضوری در فروشگاه انجام بدید.")
 }
 
 model AdminUser {

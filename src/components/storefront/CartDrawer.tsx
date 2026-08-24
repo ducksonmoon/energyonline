@@ -7,7 +7,19 @@ import { useCartStore } from "@/store/cart";
 import { formatToman } from "@/lib/format";
 import { getLiveCartStock } from "@/app/actions";
 
-export function CartDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function CartDrawer({
+  open,
+  onOpenChange,
+  salesPaused,
+  salesPausedMessage,
+  instagramHandle,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  salesPaused: boolean;
+  salesPausedMessage: string;
+  instagramHandle: string;
+}) {
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
   const [liveStock, setLiveStock] = useState<Record<string, Record<string, number>> | null>(null);
@@ -87,15 +99,47 @@ export function CartDrawer({ open, onOpenChange }: { open: boolean; onOpenChange
               <span>جمع کل</span>
               <span>{formatToman(total)}</span>
             </div>
-            <p className="text-xs text-[var(--ink-soft)] leading-6 mb-2">
-              برای نهایی کردن سفارش، از دایرکت اینستاگرام پیام بده — موجودی نهایی همون‌جا هماهنگ می‌شه.
-            </p>
-            <a
-              href="#"
-              className="w-full inline-flex items-center justify-center rounded-full bg-[var(--ink)] text-[var(--bg)] hover:opacity-90 py-2.5 text-sm font-bold"
-            >
-              پیام در اینستاگرام
-            </a>
+
+            {salesPaused ? (
+              <div className="rounded-md border border-[var(--line)] bg-[var(--bg-alt)] p-4 text-center">
+                <div className="w-9 h-9 mx-auto mb-2.5 rounded-full bg-[var(--bg)] flex items-center justify-center">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--ink-soft)"
+                    strokeWidth="1.6"
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 8v4l2.5 2.5" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <p className="text-xs text-[var(--ink)] leading-7 whitespace-pre-line">{salesPausedMessage}</p>
+                {instagramHandle && (
+                  <a
+                    href={`https://instagram.com/${instagramHandle}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] text-[var(--bg)] hover:opacity-90 py-2.5 text-sm font-bold"
+                  >
+                    پیام در اینستاگرام @{instagramHandle}
+                  </a>
+                )}
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-[var(--ink-soft)] leading-6 mb-2">
+                  برای نهایی کردن سفارش، از دایرکت اینستاگرام پیام بده — موجودی نهایی همون‌جا هماهنگ می‌شه.
+                </p>
+                <a
+                  href="#"
+                  className="w-full inline-flex items-center justify-center rounded-full bg-[var(--ink)] text-[var(--bg)] hover:opacity-90 py-2.5 text-sm font-bold"
+                >
+                  پیام در اینستاگرام
+                </a>
+              </>
+            )}
           </SheetFooter>
         )}
       </SheetContent>
