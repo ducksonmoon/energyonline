@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  key       String    @unique
+  label     String
+  iconKey   String
+  sortOrder Int       @default(0)
+  products  Product[]
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  name          String
+  description   String
+  categoryId    String
+  category      Category       @relation(fields: [categoryId], references: [id])
+  basePrice     Int
+  discountPrice Int?
+  flashPrice    Int?
+  isNew         Boolean        @default(false)
+  sortOrder     Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  images        ProductImage[]
+  sizes         ProductSize[]
+  sales         Sale[]
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  sortOrder Int     @default(0)
+}
+
+model ProductSize {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      String
+  stock     Int     @default(0)
+
+  @@unique([productId, size])
+}
+
+/// One in-store sale of a single unit, entered by staff on the sale-entry screen.
+/// Selling decrements the matching ProductSize.stock; undoing a sale restores it.
+model Sale {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      String
+  price     Int
+  soldBy    String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model StoreSettings {
+  id              Int       @id @default(1)
+  accentColor     String    @default("#f4c81a")
+  gridDensity     String    @default("comfortable")
+  showCountdown   Boolean   @default(true)
+  discountEndsAt  DateTime?
+  address         String    @default("ساری، بلوار طالقانی، نبش کوچه ۱۲، پلاک ۴")
+  hoursWeekday    String    @default("۱۰ تا ۲۱")
+  hoursThursday   String    @default("۱۰ تا ۱۹")
+  hoursFriday     String    @default("تعطیل")
+  instagramHandle String    @default("energy.ir")
+  telegramHandle  String    @default("energyir")
+
+  flashSaleEnabled    Boolean   @default(false)
+  flashSaleEndsAt     DateTime?
+  flashSaleTitle      String    @default("تا ۷۰٪ تخفیف")
+  flashSaleSubtitle   String    @default("فقط برای امروز، روی تعداد محدود")
+  flashSaleBannerText String    @default("روز تخفیف ویژه انرژی — تا ۷۰٪ تخفیف، فقط امروز")
+}
+
+model AdminUser {
+  id           String @id @default(cuid())
+  username     String @unique
+  passwordHash String
+}

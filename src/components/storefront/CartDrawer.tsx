@@ -1,0 +1,104 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { useCartStore } from "@/store/cart";
+import { formatToman } from "@/lib/format";
+import { getLiveCartStock } from "@/app/actions";
+
+export function CartDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const items = useCartStore((s) => s.items);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const [liveStock, setLiveStock] = useState<Record<string, Record<string, number>> | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    const productIds = Array.from(new Set(items.map((i) => i.productId)));
+    getLiveCartStock(productIds).then((stock) => {
+      if (!cancelled) setLiveStock(stock);
+    });
+    return () => {
+      cancelled = true;
+    };
+    // Re-checking only needs the items present when the drawer opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  function isAvailable(item: (typeof items)[number]) {
+    if (!liveStock) return true;
+    const stock = liveStock[item.productId]?.[item.size];
+    return (stock ?? 0) > 0;
+  }
+
+  const availableItems = items.filter(isAvailable);
+  const total = availableItems.reduce((sum, i) => sum + i.price, 0);
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="energy-root bg-[var(--bg)] text-[var(--ink)]" dir="rtl">
+        <SheetHeader>
+          <SheetTitle className="text-[var(--ink)]" style={{ fontFamily: "var(--font-lalezar)" }}>
+            سبد خرید
+          </SheetTitle>
+        </SheetHeader>
+
+        <div className="flex-1 overflow-y-auto px-4 flex flex-col gap-3">
+          {items.length === 0 && (
+            <p className="text-sm text-[var(--ink-soft)] py-8 text-center">سبد شما خالیه.</p>
+          )}
+          {items.map((item) => {
+            const available = isAvailable(item);
+            return (
+              <div
+                key={item.id}
+                className="flex items-center gap-3 border-b border-[var(--line)] pb-3"
+                style={{ opacity: available ? 1 : 0.5 }}
+              >
+                <div className="w-14 h-16 rounded-md bg-[var(--bg-alt)] overflow-hidden relative flex-none">
+                  {item.image && <Image src={item.image} alt={item.name} fill className="object-cover" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-bold truncate">{item.name}</div>
+                  <div className="text-xs text-[var(--ink-soft)]">سایز {item.size}</div>
+                  {available ? (
+                    <div className="text-xs font-semibold mt-0.5">{formatToman(item.price)}</div>
+                  ) : (
+                    <div className="text-xs font-semibold mt-0.5 text-[var(--brand-red)]">دیگر موجود نیست</div>
+                  )}
+                </div>
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="text-[var(--ink-soft)] hover:text-[var(--brand-red)] cursor-pointer p-1.5"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {availableItems.length > 0 && (
+          <SheetFooter>
+            <div className="flex items-center justify-between text-sm font-bold mb-2">
+              <span>جمع کل</span>
+              <span>{formatToman(total)}</span>
+            </div>
+            <p className="text-xs text-[var(--ink-soft)] leading-6 mb-2">
+              برای نهایی کردن سفارش، از دایرکت اینستاگرام پیام بده — موجودی نهایی همون‌جا هماهنگ می‌شه.
+            </p>
+            <a
+              href="#"
+              className="w-full inline-flex items-center justify-center rounded-full bg-[var(--ink)] text-[var(--bg)] hover:opacity-90 py-2.5 text-sm font-bold"
+            >
+              پیام در اینستاگرام
+            </a>
+          </SheetFooter>
+        )}
+      </SheetContent>
+    </Sheet>
+  );
+}

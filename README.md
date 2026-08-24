@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# انرژی — فروشگاه پوشاک
 
-## Getting Started
+Persian-language, RTL storefront for "انرژی" (Energy), a clothing shop in Sari, Iran, plus an
+admin dashboard for managing products, stock, discounts, categories, and store settings.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, Turbopack) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** + **shadcn/ui** (base-ui primitives) for the admin dashboard
+- **Prisma 7** + **SQLite** (via `@prisma/adapter-better-sqlite3` driver adapter)
+- Custom **JWT session auth** (`jose` + `bcryptjs`) for the single admin login — no external auth
+  service required
+- **Framer Motion** for storefront animations
+- **Zustand** (persisted to `localStorage`) for the client-side cart
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env   # then edit SESSION_SECRET / ADMIN_USERNAME / ADMIN_PASSWORD
+npx prisma db push     # creates dev.db from prisma/schema.prisma
+npx prisma db seed     # seeds categories, the original 8 products, store settings, admin user
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) for the storefront and
+[http://localhost:3000/admin](http://localhost:3000/admin) for the dashboard (login with the
+`ADMIN_USERNAME` / `ADMIN_PASSWORD` from your `.env`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Change the default admin password before deploying anywhere reachable from the internet.**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project layout
 
-## Learn More
+- `src/app/page.tsx` — storefront (Server Component data fetch + `StorefrontApp` client island)
+- `src/app/admin/login` — admin login (outside the auth guard)
+- `src/app/admin/(dashboard)` — overview, products, discounts, categories, settings (route group,
+  guarded by `src/proxy.ts` + a server-side session check in its layout)
+- `src/lib` — `db.ts` (Prisma singleton), `auth.ts` (sessions), `queries.ts`, `derived.ts` /
+  `format.ts` (stock/price/Persian-numeral helpers), `productViewModel.ts`
+- `src/components/storefront` / `src/components/admin` — UI split by app area
+- `prisma/schema.prisma`, `prisma/seed.ts` — data model and seed data
 
-To learn more about Next.js, take a look at the following resources:
+## Notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Uploaded product images are written to `public/uploads/products/<id>/` and referenced by URL in
+  the DB; products without an image fall back to the original icon placeholder.
+- The cart has no checkout flow by design — matching the original store concept, orders are
+  coordinated via Instagram DM (see the cart drawer and the Instagram CTA section).
+- `npx prisma studio` (needs `DATABASE_URL` in the environment) is a quick way to browse/edit the
+  SQLite data directly during development.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Production build
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+npm run start
+```
