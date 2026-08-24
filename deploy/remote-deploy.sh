@@ -27,6 +27,15 @@ if ! command -v make >/dev/null 2>&1 || ! command -v gcc >/dev/null 2>&1; then
   sudo apt-get install -y build-essential python3
 fi
 
+if [ "$(swapon --show=NAME --noheadings 2>/dev/null | wc -l)" -eq 0 ] && [ ! -f /swapfile ]; then
+  echo "No swap configured; adding a 2G swapfile (npm ci compiling better-sqlite3 needs more memory than this server has as RAM)..."
+  sudo fallocate -l 2G /swapfile
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  sudo swapon /swapfile
+  echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab >/dev/null
+fi
+
 npm ci
 npx prisma generate
 npx prisma db push --skip-generate
