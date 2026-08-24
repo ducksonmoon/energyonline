@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "@/components/storefront/TopBar";
 import { FlashSaleBanner } from "@/components/storefront/FlashSaleBanner";
 import { FlashSaleSection } from "@/components/storefront/FlashSaleSection";
-import { Hero, type HeroTag } from "@/components/storefront/Hero";
+import { Hero } from "@/components/storefront/Hero";
 import { CategoryShortcuts, type CategoryShortcut } from "@/components/storefront/CategoryShortcuts";
 import { AvailabilityBanner } from "@/components/storefront/AvailabilityBanner";
 import { CategoryNav, type NavCategory } from "@/components/storefront/CategoryNav";
@@ -81,15 +81,6 @@ export function StorefrontApp({
     [categories, products]
   );
 
-  const heroTags: HeroTag[] = useMemo(() => {
-    return products
-      .map((p) => ({ p, total: totalStock(p.sizes) }))
-      .filter((x) => x.total > 0)
-      .sort((a, b) => a.total - b.total)
-      .slice(0, 2)
-      .map(({ p, total }) => ({ catLabel: p.category.label, stockFa: `${toFa(total)} عدد`, iconKey: p.category.key }));
-  }, [products]);
-
   const heroStockLine = useMemo(() => {
     const inStock = products.filter((p) => totalStock(p.sizes) > 0).length;
     return `${toFa(inStock)} مدل از ${toFa(products.length)} تا الان موجوده`;
@@ -105,7 +96,7 @@ export function StorefrontApp({
       {flashActive && <FlashSaleBanner endsAt={settings.flashSaleEndsAt} bannerText={settings.flashSaleBannerText} />}
       <TopBar onCartClick={() => setCartOpen(true)} />
 
-      <Hero heroStockLine={heroStockLine} heroTags={heroTags} />
+      <Hero heroStockLine={heroStockLine} />
       {flashActive && (
         <FlashSaleSection
           endsAt={settings.flashSaleEndsAt}
