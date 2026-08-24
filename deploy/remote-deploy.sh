@@ -21,6 +21,12 @@ if ! command -v pm2 >/dev/null 2>&1; then
   sudo npm install -g pm2
 fi
 
+if ! command -v make >/dev/null 2>&1 || ! command -v gcc >/dev/null 2>&1; then
+  echo "Installing build tools (needed to compile better-sqlite3)..."
+  sudo apt-get update
+  sudo apt-get install -y build-essential python3
+fi
+
 npm ci
 npx prisma generate
 npx prisma db push --skip-generate
