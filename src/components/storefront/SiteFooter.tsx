@@ -19,7 +19,7 @@ export function SiteFooter({
 }) {
   return (
     <div className="bg-[var(--ink)] text-[var(--bg)] px-5 pt-14 pb-6.5">
-      <div className="max-w-[960px] mx-auto grid gap-9" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))" }}>
+      <div className="max-w-[1280px] mx-auto grid gap-9" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))" }}>
         <div>
           <div className="font-extrabold text-lg mb-2.5">انرژی</div>
           <div className="text-[13px] leading-[1.9] max-w-[240px] text-[rgba(246,242,236,.6)]">
@@ -118,7 +118,7 @@ export function SiteFooter({
           </div>
         </div>
       </div>
-      <div className="max-w-[960px] mx-auto mt-9 pt-4.5 border-t border-[rgba(246,242,236,.12)] text-[11px] text-[rgba(246,242,236,.4)]">
+      <div className="max-w-[1280px] mx-auto mt-9 pt-4.5 border-t border-[rgba(246,242,236,.12)] text-[11px] text-[rgba(246,242,236,.4)]">
         © انرژی — تمامی حقوق محفوظ است.
       </div>
     </div>

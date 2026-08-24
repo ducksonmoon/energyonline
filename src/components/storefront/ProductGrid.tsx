@@ -18,12 +18,12 @@ export function ProductGrid({
 }) {
   const cols =
     gridDensity === "compact"
-      ? "grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5"
-      : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4";
+      ? "grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+      : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
   const gap = gridDensity === "compact" ? "gap-2.5 sm:gap-3" : "gap-3.5 sm:gap-5";
 
   return (
-    <div className={`max-w-[1100px] mx-auto px-4 sm:px-5 pt-6 sm:pt-8 pb-12 sm:pb-[70px] grid ${cols} ${gap}`}>
+    <div className={`max-w-[1280px] mx-auto px-4 sm:px-5 pt-6 sm:pt-8 pb-12 sm:pb-[70px] grid ${cols} ${gap}`}>
       {products.map((p, i) => (
         <ProductCard key={p.id} product={p} loaded={loaded} delay={(i % 4) * 70} onOpen={() => onOpen(p.id)} />
       ))}

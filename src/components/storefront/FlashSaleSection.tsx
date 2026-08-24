@@ -36,7 +36,7 @@ export function FlashSaleSection({
           "radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--brand-red) 55%, transparent), transparent 55%)",
       }}
     >
-      <RevealOnScroll className="mx-auto max-w-[1100px]">
+      <RevealOnScroll className="mx-auto max-w-[1280px]">
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-4">
           <div className="flex flex-wrap items-baseline gap-3.5">
             <div
@@ -55,7 +55,7 @@ export function FlashSaleSection({
         </div>
       </RevealOnScroll>
 
-      <div className="mx-auto mt-7 grid max-w-[1100px] grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+      <div className="mx-auto mt-7 grid max-w-[1280px] grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
         {products.map((p, i) => (
           <motion.div
             key={p.id}
