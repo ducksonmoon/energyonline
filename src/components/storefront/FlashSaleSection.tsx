@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import type { MouseEvent } from "react";
 import { useHmsCountdown } from "@/lib/useHmsCountdown";
 import { RevealOnScroll } from "@/components/storefront/RevealOnScroll";
 import { toFa } from "@/lib/format";
@@ -55,47 +57,55 @@ export function FlashSaleSection({
 
       <div className="mx-auto mt-7 grid max-w-[1100px] grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
         {products.map((p, i) => (
-          <motion.button
+          <motion.div
             key={p.id}
-            type="button"
-            onClick={() => onOpen(p.id)}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.12 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: (i * 70) / 1000 }}
-            className="cursor-pointer overflow-hidden rounded-md bg-[var(--bg)] text-right"
+            className="overflow-hidden rounded-md bg-[var(--bg)]"
           >
-            <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-[var(--bg-alt)] text-[var(--ink-soft)]">
-              {p.image ? (
-                <Image
-                  src={p.image}
-                  alt={p.name}
-                  fill
-                  sizes="(max-width: 640px) 45vw, 260px"
-                  className="object-cover"
-                />
-              ) : (
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-50">
-                  <path d="M9 4h6l1 2h3a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h3z" />
-                  <path d="M9 4a3 3 0 006 0" />
-                </svg>
-              )}
-              <div className="absolute top-2 left-2 rounded-full bg-[var(--brand-red)] px-2 py-1 text-[11px] font-extrabold text-[var(--accent)]">
-                ٪{toFa(p.discountPct)}
+            <Link
+              href={`/product/${p.id}`}
+              onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+                if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                e.preventDefault();
+                onOpen(p.id);
+              }}
+              className="cursor-pointer block text-right"
+            >
+              <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-[var(--bg-alt)] text-[var(--ink-soft)]">
+                {p.image ? (
+                  <Image
+                    src={p.image}
+                    alt={p.name}
+                    fill
+                    sizes="(max-width: 640px) 45vw, 260px"
+                    className="object-cover"
+                  />
+                ) : (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-50">
+                    <path d="M9 4h6l1 2h3a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h3z" />
+                    <path d="M9 4a3 3 0 006 0" />
+                  </svg>
+                )}
+                <div className="absolute top-2 left-2 rounded-full bg-[var(--brand-red)] px-2 py-1 text-[11px] font-extrabold text-[var(--accent)]">
+                  ٪{toFa(p.discountPct)}
+                </div>
               </div>
-            </div>
-            <div className="p-2.5 sm:p-3">
-              <div className="mb-1 text-[10.5px] text-[var(--ink-soft)]">{p.catLabel}</div>
-              <div className="mb-1.5 text-[13.5px] font-bold">{p.name}</div>
-              <div className="flex flex-wrap items-baseline gap-1.5">
-                <div className="text-[13.5px] font-extrabold text-[var(--brand-red)]">{p.priceFa}</div>
-                <div className="text-[11px] text-[var(--ink-soft)] line-through">{p.originalPriceFa}</div>
+              <div className="p-2.5 sm:p-3">
+                <div className="mb-1 text-[10.5px] text-[var(--ink-soft)]">{p.catLabel}</div>
+                <div className="mb-1.5 text-[13.5px] font-bold">{p.name}</div>
+                <div className="flex flex-wrap items-baseline gap-1.5">
+                  <div className="text-[13.5px] font-extrabold text-[var(--brand-red)]">{p.priceFa}</div>
+                  <div className="text-[11px] text-[var(--ink-soft)] line-through">{p.originalPriceFa}</div>
+                </div>
+                <div className="mt-1 text-[11px] font-semibold" style={{ color: p.stockColor }}>
+                  {p.stockLabel}
+                </div>
               </div>
-              <div className="mt-1 text-[11px] font-semibold" style={{ color: p.stockColor }}>
-                {p.stockLabel}
-              </div>
-            </div>
-          </motion.button>
+            </Link>
+          </motion.div>
         ))}
       </div>
     </div>

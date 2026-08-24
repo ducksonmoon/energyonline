@@ -1,5 +1,7 @@
 export function SiteFooter({
   address,
+  phone,
+  phoneTurkey,
   hoursWeekday,
   hoursThursday,
   hoursFriday,
@@ -7,6 +9,8 @@ export function SiteFooter({
   telegramHandle,
 }: {
   address: string;
+  phone: string;
+  phoneTurkey: string;
   hoursWeekday: string;
   hoursThursday: string;
   hoursFriday: string;
@@ -34,6 +38,40 @@ export function SiteFooter({
           </div>
         </div>
         <div>
+          <div className="text-xs tracking-[.08em] text-[rgba(246,242,236,.5)] mb-3">تماس با ما</div>
+          <div className="flex flex-col gap-2 text-[13px] text-[rgba(246,242,236,.85)]">
+            <a href={`tel:${phone.replace(/[^0-9+]/g, "")}`} className="flex items-center gap-2" dir="ltr">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                className="shrink-0"
+              >
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+              </svg>
+              {phone}
+            </a>
+            <a href={`tel:${phoneTurkey.replace(/[^0-9+]/g, "")}`} className="flex items-center gap-2" dir="ltr">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                className="shrink-0"
+              >
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+              </svg>
+              {phoneTurkey}
+            </a>
+            <span className="text-[11px] text-[rgba(246,242,236,.5)]">سفارش از ترکیه</span>
+          </div>
+        </div>
+        <div>
           <div className="text-xs tracking-[.08em] text-[rgba(246,242,236,.5)] mb-3">ساعات کاری</div>
           <div className="text-[13px] leading-[2] text-[rgba(246,242,236,.85)]">
             <div className="flex justify-between max-w-[220px]">
@@ -53,7 +91,12 @@ export function SiteFooter({
         <div>
           <div className="text-xs tracking-[.08em] text-[rgba(246,242,236,.5)] mb-3">ما رو دنبال کن</div>
           <div className="flex flex-col gap-2.5">
-            <a href="#" className="flex items-center gap-2 text-[13px]">
+            <a
+              href={`https://instagram.com/${instagramHandle}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 text-[13px]"
+            >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                 <rect x="3" y="3" width="18" height="18" rx="5" />
                 <circle cx="12" cy="12" r="4" />
@@ -61,7 +104,12 @@ export function SiteFooter({
               </svg>
               اینستاگرام {instagramHandle}@
             </a>
-            <a href="#" className="flex items-center gap-2 text-[13px]">
+            <a
+              href={`https://t.me/${telegramHandle}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 text-[13px]"
+            >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                 <path d="M22 3L2 11l6 2m14-10l-4 18-8-6m12-12L8 13" />
               </svg>

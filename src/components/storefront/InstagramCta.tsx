@@ -17,7 +17,9 @@ export function InstagramCta({ instagramHandle }: { instagramHandle: string }) {
           </div>
         </div>
         <a
-          href="#"
+          href={`https://instagram.com/${instagramHandle}`}
+          target="_blank"
+          rel="noreferrer"
           className="flex-none inline-flex items-center gap-2 px-5 py-3 rounded-[3px] bg-[var(--ink)] text-[var(--bg)] font-bold text-[13.5px]"
         >
           پیام در اینستاگرام {instagramHandle && `@${instagramHandle}`}

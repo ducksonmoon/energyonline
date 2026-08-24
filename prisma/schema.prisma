@@ -72,12 +72,15 @@ model StoreSettings {
   gridDensity     String    @default("comfortable")
   showCountdown   Boolean   @default(true)
   discountEndsAt  DateTime?
-  address         String    @default("ساری، بلوار طالقانی، نبش کوچه ۱۲، پلاک ۴")
+  address         String    @default("ساری، خیابان فرهنگ")
+  phone           String    @default("011-33305327")
+  /// Landline/mobile for coordinating orders sourced from Turkey (see the "سفارش از ترکیه" section).
+  phoneTurkey     String    @default("+90 531 733 2665")
   hoursWeekday    String    @default("۱۰ تا ۲۱")
   hoursThursday   String    @default("۱۰ تا ۱۹")
   hoursFriday     String    @default("تعطیل")
-  instagramHandle String    @default("energy.ir")
-  telegramHandle  String    @default("energyir")
+  instagramHandle String    @default("energie_boutique_online")
+  telegramHandle  String    @default("energieonline")
 
   flashSaleEnabled    Boolean   @default(false)
   flashSaleEndsAt     DateTime?

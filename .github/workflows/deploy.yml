@@ -64,6 +64,7 @@ jobs:
           ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
           NEXT_PUBLIC_GA_MEASUREMENT_ID=$GA_MEASUREMENT_ID
           NEXT_PUBLIC_CLARITY_PROJECT_ID=$CLARITY_PROJECT_ID
+          NEXT_PUBLIC_SITE_URL=${PUBLIC_DOMAIN:+https://$PUBLIC_DOMAIN}
           EOF
 
       - name: Run remote deploy script

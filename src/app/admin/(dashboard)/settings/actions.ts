@@ -14,6 +14,8 @@ const schema = z.object({
   accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "کد رنگ نامعتبر است"),
   gridDensity: z.enum(["comfortable", "compact"]),
   address: z.string().min(1),
+  phone: z.string().min(1),
+  phoneTurkey: z.string().min(1),
   hoursWeekday: z.string().min(1),
   hoursThursday: z.string().min(1),
   hoursFriday: z.string().min(1),
