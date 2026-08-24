@@ -47,6 +47,7 @@ export async function sellItem(productId: string, size: string): Promise<SellRes
     });
 
     revalidatePath("/");
+    revalidatePath(`/product/${productId}`);
     revalidatePath("/admin/sell");
     revalidatePath("/admin");
 
@@ -70,7 +71,7 @@ export async function undoSale(saleId: string): Promise<{ ok: true } | { ok: fal
   await requireAdmin();
 
   try {
-    await db.$transaction(async (tx) => {
+    const productId = await db.$transaction(async (tx) => {
       const sale = await tx.sale.findUnique({ where: { id: saleId } });
       if (!sale) throw new Error("این فروش یافت نشد");
       await tx.productSize.updateMany({
@@ -78,9 +79,11 @@ export async function undoSale(saleId: string): Promise<{ ok: true } | { ok: fal
         data: { stock: { increment: 1 } },
       });
       await tx.sale.delete({ where: { id: saleId } });
+      return sale.productId;
     });
 
     revalidatePath("/");
+    revalidatePath(`/product/${productId}`);
     revalidatePath("/admin/sell");
     revalidatePath("/admin");
     return { ok: true };

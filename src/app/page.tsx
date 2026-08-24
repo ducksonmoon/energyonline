@@ -3,7 +3,11 @@ import { getStorefrontData } from "@/lib/queries";
 import { isFlashSaleActive } from "@/lib/derived";
 import { absoluteUrl } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
+// Cached for up to a minute so a traffic spike hits this render once, not
+// once per visitor — admin actions (sales, stock/price edits) already call
+// revalidatePath("/") on every change, so real updates still show instantly.
+// This is just the staleness ceiling for anything that slips through.
+export const revalidate = 60;
 
 export default async function Home() {
   const { settings, categories, products } = await getStorefrontData();

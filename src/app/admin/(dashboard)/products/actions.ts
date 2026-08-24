@@ -172,6 +172,7 @@ export async function updateProduct(
   }
 
   revalidatePath("/");
+  revalidatePath(`/product/${productId}`);
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${productId}`);
   redirect("/admin/products");
@@ -185,5 +186,6 @@ export async function deleteProduct(productId: string) {
     await unlink(path.join(process.cwd(), "public", img.url)).catch(() => {});
   }
   revalidatePath("/");
+  revalidatePath(`/product/${productId}`);
   revalidatePath("/admin/products");
 }
