@@ -102,7 +102,7 @@ export function SiteFooter({
                 <circle cx="12" cy="12" r="4" />
                 <circle cx="17.2" cy="6.8" r="1" />
               </svg>
-              اینستاگرام {instagramHandle}@
+              اینستاگرام <span dir="ltr">@{instagramHandle}</span>
             </a>
             <a
               href={`https://t.me/${telegramHandle}`}
@@ -113,7 +113,7 @@ export function SiteFooter({
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                 <path d="M22 3L2 11l6 2m14-10l-4 18-8-6m12-12L8 13" />
               </svg>
-              تلگرام t.me/{telegramHandle}
+              تلگرام <span dir="ltr">t.me/{telegramHandle}</span>
             </a>
           </div>
         </div>
