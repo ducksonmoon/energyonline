@@ -48,12 +48,80 @@ fi
 
 npm run build
 
+# Bind to loopback only — nginx is the sole public entry point (below), so the
+# app is never reachable directly on :3000 without going through TLS.
 if pm2 describe "$APP_NAME" >/dev/null 2>&1; then
-  pm2 restart "$APP_NAME" --update-env
-else
-  pm2 start npm --name "$APP_NAME" --cwd "$APP_DIR" -- start
+  pm2 delete "$APP_NAME"
 fi
+pm2 start npm --name "$APP_NAME" --cwd "$APP_DIR" -- start -- -H 127.0.0.1
 pm2 save
 
 # Best-effort: keep pm2 (and this app) running across server reboots.
 sudo env PATH="$PATH:$(dirname "$(command -v pm2)")" pm2 startup systemd -u "$(whoami)" --hp "$HOME" >/dev/null 2>&1 || true
+
+# --- nginx reverse proxy + TLS ---------------------------------------------
+# The app's session cookie is Secure-only in production, which browsers will
+# not store/send over plain HTTP on a public (non-loopback) host — so TLS
+# termination here isn't optional, it's what makes admin login work at all.
+if ! command -v nginx >/dev/null 2>&1; then
+  echo "Installing nginx..."
+  sudo apt-get update
+  sudo apt-get install -y nginx openssl
+fi
+
+SSL_DIR=/etc/nginx/ssl-energyonline
+sudo mkdir -p "$SSL_DIR"
+if [ ! -f "$SSL_DIR/selfsigned.crt" ]; then
+  echo "Generating a self-signed TLS certificate (fallback so HTTPS works immediately; replace with a real cert once a domain points here — see PUBLIC_DOMAIN below)..."
+  sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+    -keyout "$SSL_DIR/selfsigned.key" -out "$SSL_DIR/selfsigned.crt" \
+    -subj "/CN=${PUBLIC_DOMAIN:-$APP_NAME}"
+fi
+
+sudo tee /etc/nginx/sites-available/energyonline >/dev/null <<NGINX
+server {
+    listen 80;
+    server_name _;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name _;
+
+    ssl_certificate     $SSL_DIR/selfsigned.crt;
+    ssl_certificate_key $SSL_DIR/selfsigned.key;
+
+    client_max_body_size 10m;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+NGINX
+
+sudo ln -sf /etc/nginx/sites-available/energyonline /etc/nginx/sites-enabled/energyonline
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl enable nginx >/dev/null 2>&1 || true
+sudo systemctl reload nginx 2>/dev/null || sudo systemctl restart nginx
+
+# Optional: if a real domain is set (repo variable PUBLIC_DOMAIN) and points
+# at this server, swap the self-signed cert for a trusted Let's Encrypt one.
+# Best-effort — never fails the deploy, since the self-signed cert above
+# already gets HTTPS working regardless.
+if [ -n "${PUBLIC_DOMAIN:-}" ]; then
+  if ! command -v certbot >/dev/null 2>&1; then
+    sudo apt-get install -y certbot python3-certbot-nginx
+  fi
+  sudo certbot --nginx -d "$PUBLIC_DOMAIN" --non-interactive --agree-tos \
+    -m "${CERTBOT_EMAIL:-admin@$PUBLIC_DOMAIN}" --redirect \
+    || echo "certbot failed (domain may not point here yet) — continuing with the self-signed cert"
+fi
