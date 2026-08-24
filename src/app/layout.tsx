@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Vazirmatn, Lalezar } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@/components/Analytics";
 import "./globals.css";
 
 const vazirmatn = Vazirmatn({
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="antialiased">
         {children}
         <Toaster richColors position="top-center" />
+        <Analytics />
       </body>
     </html>
   );

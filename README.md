@@ -74,7 +74,8 @@ Configure these before the first run:
   `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`.
 - **Repository variables** (same page, *Variables* tab, optional): `APP_DIR` (default
   `/home/ubuntu/apps/energyonline`), `APP_NAME` (default `energyonline`), `SERVER_PORT` (default
-  `22`), `PUBLIC_DOMAIN` / `CERTBOT_EMAIL` (see below).
+  `22`), `PUBLIC_DOMAIN` / `CERTBOT_EMAIL` (see below), `GA_MEASUREMENT_ID` / `CLARITY_PROJECT_ID`
+  (see below).
 
 The server itself only needs SSH access and `sudo` for the (idempotent) install steps — everything
 else is handled by the workflow.
@@ -84,3 +85,8 @@ works immediately (so cookies/logins work) but browsers show an untrusted-certif
 since it isn't issued by a real CA. Once you have a domain pointed at the server's IP, set the
 `PUBLIC_DOMAIN` repository variable (and optionally `CERTBOT_EMAIL`) and re-run the workflow: it'll
 request a trusted Let's Encrypt certificate via certbot and switch nginx over to it automatically.
+
+**Analytics**: optional, off by default. Set the `GA_MEASUREMENT_ID` repository variable (from
+[analytics.google.com](https://analytics.google.com), looks like `G-XXXXXXXXXX`) and/or
+`CLARITY_PROJECT_ID` (from [clarity.microsoft.com](https://clarity.microsoft.com)) and re-run the
+workflow. Both only load on the public storefront, never in `/admin`.
