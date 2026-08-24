@@ -8,6 +8,7 @@ import { Hero, type HeroTag } from "@/components/storefront/Hero";
 import { CategoryShortcuts, type CategoryShortcut } from "@/components/storefront/CategoryShortcuts";
 import { AvailabilityBanner } from "@/components/storefront/AvailabilityBanner";
 import { CategoryNav, type NavCategory } from "@/components/storefront/CategoryNav";
+import { SearchBar } from "@/components/storefront/SearchBar";
 import { ProductGrid } from "@/components/storefront/ProductGrid";
 import { ProductDetailPanel } from "@/components/storefront/ProductDetailPanel";
 import { MiniCart } from "@/components/storefront/MiniCart";
@@ -33,6 +34,7 @@ export function StorefrontApp({
   flashActive: boolean;
 }) {
   const [category, setCategory] = useState("all");
+  const [search, setSearch] = useState("");
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -47,10 +49,15 @@ export function StorefrontApp({
   const flashProducts = useMemo(() => productsVM.filter((p) => p.isFlash), [productsVM]);
 
   const filtered = useMemo(() => {
-    if (category === "all") return productsVM;
-    if (category === "offers") return productsVM.filter((p) => p.isOffer);
-    return productsVM.filter((p) => p.categoryKey === category);
-  }, [productsVM, category]);
+    let list = productsVM;
+    if (category === "offers") list = list.filter((p) => p.isOffer);
+    else if (category !== "all") list = list.filter((p) => p.categoryKey === category);
+
+    const q = search.trim().toLowerCase();
+    if (q) list = list.filter((p) => p.name.toLowerCase().includes(q) || p.catLabel.toLowerCase().includes(q));
+
+    return list;
+  }, [productsVM, category, search]);
 
   const navCategories: NavCategory[] = useMemo(
     () => [
@@ -114,12 +121,14 @@ export function StorefrontApp({
         discountEndsAt={settings.discountEndsAt}
         flashActive={flashActive}
       />
+      <SearchBar value={search} onChange={setSearch} />
       <CategoryNav categories={navCategories} active={category} onSelect={setCategory} />
       <ProductGrid
         products={filtered}
         loaded={loaded}
         gridDensity={settings.gridDensity}
         onOpen={setSelectedProductId}
+        emptyMessage={search.trim() ? "چیزی با این نام پیدا نشد." : "محصولی در این دسته پیدا نشد."}
       />
       <FaqSection />
       <InstagramCta instagramHandle={settings.instagramHandle} />

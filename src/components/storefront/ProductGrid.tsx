@@ -8,11 +8,13 @@ export function ProductGrid({
   loaded,
   gridDensity,
   onOpen,
+  emptyMessage = "محصولی در این دسته پیدا نشد.",
 }: {
   products: ProductVM[];
   loaded: boolean;
   gridDensity: string;
   onOpen: (id: string) => void;
+  emptyMessage?: string;
 }) {
   const cols =
     gridDensity === "compact"
@@ -26,9 +28,7 @@ export function ProductGrid({
         <ProductCard key={p.id} product={p} loaded={loaded} delay={(i % 4) * 70} onOpen={() => onOpen(p.id)} />
       ))}
       {products.length === 0 && (
-        <div className="col-span-full text-center py-16 text-[var(--ink-soft)] text-sm">
-          محصولی در این دسته پیدا نشد.
-        </div>
+        <div className="col-span-full text-center py-16 text-[var(--ink-soft)] text-sm">{emptyMessage}</div>
       )}
     </div>
   );

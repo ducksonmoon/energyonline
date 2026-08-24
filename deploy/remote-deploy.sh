@@ -187,3 +187,14 @@ if [ -n "${PUBLIC_DOMAIN:-}" ]; then
     -m "${CERTBOT_EMAIL:-admin@$PUBLIC_DOMAIN}" --redirect \
     || echo "certbot failed (domain may not point here yet) — continuing with the self-signed cert"
 fi
+
+# --- daily database backup ---------------------------------------------
+# Everything (products, sales history) lives in this one SQLite file with
+# no redundancy — back it up daily so a disk failure doesn't lose it all.
+# Uses better-sqlite3's online backup API (safe with the app live), gzips
+# the result, and keeps the last 14 days (see scripts/backup-db.mjs).
+mkdir -p "$APP_DIR/backups"
+NODE_BIN="$(command -v node)"
+CRON_CMD="cd $APP_DIR && DATABASE_URL=file:./dev.db $NODE_BIN scripts/backup-db.mjs >> $APP_DIR/backups/backup.log 2>&1"
+CRON_LINE="0 4 * * * $CRON_CMD"
+( crontab -l 2>/dev/null | grep -vF "scripts/backup-db.mjs"; echo "$CRON_LINE" ) | crontab -
