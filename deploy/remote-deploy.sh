@@ -197,4 +197,8 @@ mkdir -p "$APP_DIR/backups"
 NODE_BIN="$(command -v node)"
 CRON_CMD="cd $APP_DIR && DATABASE_URL=file:./dev.db $NODE_BIN scripts/backup-db.mjs >> $APP_DIR/backups/backup.log 2>&1"
 CRON_LINE="0 4 * * * $CRON_CMD"
-( crontab -l 2>/dev/null | grep -vF "scripts/backup-db.mjs"; echo "$CRON_LINE" ) | crontab -
+# `crontab -l` exits non-zero when the user has no crontab yet (a fresh
+# server), and grep -v exits non-zero when nothing matches (also true on a
+# fresh server) — either would abort the whole deploy under `set -euo
+# pipefail` without the `|| true` here.
+{ crontab -l 2>/dev/null | grep -vF "scripts/backup-db.mjs" || true; echo "$CRON_LINE"; } | crontab -
