@@ -22,8 +22,16 @@ export function InstagramCta({ instagramHandle }: { instagramHandle: string }) {
           rel="noreferrer"
           className="flex-none inline-flex items-center gap-2 px-5 py-3 rounded-[3px] bg-[var(--ink)] text-[var(--bg)] font-bold text-[13.5px]"
         >
-          پیام در اینستاگرام {instagramHandle && `@${instagramHandle}`}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          پیام در اینستاگرام {instagramHandle && <span dir="ltr">@{instagramHandle}</span>}
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            style={{ transform: "scaleX(-1)" }}
+          >
             <path d="M5 12h13M13 6l6 6-6 6" />
           </svg>
         </a>

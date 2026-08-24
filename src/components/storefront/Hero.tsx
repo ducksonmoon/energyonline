@@ -49,7 +49,15 @@ export function Hero({ heroStockLine, heroTags }: { heroStockLine: string; heroT
           className="inline-flex items-center gap-2 rounded-[3px] bg-[var(--ink)] text-[var(--bg)] font-bold text-sm px-5 py-3 sm:px-[22px] sm:py-3.5 transition-transform active:scale-95 hover:scale-105"
         >
           دیدن موجودی
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            style={{ transform: "scaleX(-1)" }}
+          >
             <path d="M5 12h13M13 6l6 6-6 6" />
           </svg>
         </a>

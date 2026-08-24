@@ -123,7 +123,7 @@ export function CartDrawer({
                     rel="noreferrer"
                     className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] text-[var(--bg)] hover:opacity-90 py-2.5 text-sm font-bold"
                   >
-                    پیام در اینستاگرام @{instagramHandle}
+                    پیام در اینستاگرام <span dir="ltr">@{instagramHandle}</span>
                   </a>
                 )}
               </div>
@@ -133,10 +133,12 @@ export function CartDrawer({
                   برای نهایی کردن سفارش، از دایرکت اینستاگرام پیام بده — موجودی نهایی همون‌جا هماهنگ می‌شه.
                 </p>
                 <a
-                  href="#"
+                  href={`https://instagram.com/${instagramHandle}`}
+                  target="_blank"
+                  rel="noreferrer"
                   className="w-full inline-flex items-center justify-center rounded-full bg-[var(--ink)] text-[var(--bg)] hover:opacity-90 py-2.5 text-sm font-bold"
                 >
-                  پیام در اینستاگرام
+                  پیام در اینستاگرام {instagramHandle && <span dir="ltr">@{instagramHandle}</span>}
                 </a>
               </>
             )}
