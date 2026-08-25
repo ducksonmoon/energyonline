@@ -13,9 +13,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="min-h-screen flex" dir="rtl">
+    <div className="min-h-screen flex flex-col md:flex-row" dir="rtl">
       <AdminSidebar username={session.username} logoutAction={logout} />
-      <main className="flex-1 p-6 md:p-8 bg-muted/20 overflow-x-hidden">{children}</main>
+      <main className="flex-1 min-w-0 p-4 sm:p-6 md:p-8 bg-muted/20 overflow-x-hidden">{children}</main>
     </div>
   );
 }

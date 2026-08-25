@@ -109,7 +109,51 @@ export function DiscountTable({ products }: { products: Row[] }) {
         </Button>
       </div>
 
-      <div className="rounded-xl border bg-card">
+      {/* Mobile: a card per product — the edit column is unreachable in a 6-col table on a narrow screen. */}
+      <div className="space-y-3 sm:hidden">
+        <label className="flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm">
+          <input
+            type="checkbox"
+            checked={selected.size === products.length && products.length > 0}
+            onChange={toggleAll}
+          />
+          انتخاب همه
+        </label>
+        {products.map((p) => (
+          <div key={p.id} className="rounded-xl border bg-card p-4 space-y-3">
+            <label className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                checked={selected.has(p.id)}
+                onChange={() => toggleSelected(p.id)}
+                className="mt-1"
+              />
+              <span className="min-w-0 flex-1">
+                <span className="block font-medium truncate">{p.name}</span>
+                <span className="block text-xs text-muted-foreground">
+                  {p.catLabel} · قیمت پایه {formatToman(p.basePrice)}
+                </span>
+              </span>
+            </label>
+            <div className="flex items-center gap-2">
+              <Input
+                type="number"
+                min={0}
+                placeholder="بدون تخفیف"
+                value={drafts[p.id] ?? ""}
+                onChange={(e) => setDrafts((prev) => ({ ...prev, [p.id]: e.target.value }))}
+                className="flex-1"
+              />
+              <Button type="button" size="sm" variant="outline" onClick={() => saveRow(p.id)} disabled={pending}>
+                ذخیره
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop/tablet: full table */}
+      <div className="hidden rounded-xl border bg-card sm:block">
         <Table>
           <TableHeader>
             <TableRow>
