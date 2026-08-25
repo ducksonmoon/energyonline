@@ -63,9 +63,12 @@ function SheetContent({
           <SheetPrimitive.Close
             data-slot="sheet-close"
             render={
+              // Logical "end" (not physical "right") so it doesn't collide
+              // with a title that right-aligns under dir="rtl" — the two
+              // would otherwise both land in the same physical corner.
               <Button
                 variant="ghost"
-                className="absolute top-3 right-3"
+                className="absolute top-3 end-3"
                 size="icon-sm"
               />
             }

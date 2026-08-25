@@ -98,7 +98,10 @@ export function AdminSidebar({
           <SheetTrigger render={<Button variant="outline" size="icon" aria-label="باز کردن منو" />}>
             <MenuIcon />
           </SheetTrigger>
-          <SheetContent side="right" className="flex flex-col p-4">
+          {/* The hamburger trigger sits at the physical left of the RTL top
+              bar (Brand comes first in DOM, so it's pushed to the right),
+              so the drawer opens from the same side it was triggered from. */}
+          <SheetContent side="left" className="flex flex-col p-4">
             <SheetTitle className="sr-only">منوی پنل مدیریت</SheetTitle>
             <div className="mb-6 mt-6">
               <Brand />
