@@ -49,7 +49,10 @@ export function CartDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="energy-root bg-[var(--bg)] text-[var(--ink)]" dir="rtl">
+      {/* Both cart triggers (TopBar's icon, the floating MiniCart pill) sit
+          on the physical left in this RTL layout, so the drawer opens from
+          the same side instead of the component's LTR-oriented default. */}
+      <SheetContent side="left" className="energy-root bg-[var(--bg)] text-[var(--ink)]" dir="rtl">
         <SheetHeader>
           <SheetTitle className="text-[var(--ink)]" style={{ fontFamily: "var(--font-lalezar)" }}>
             سبد خرید
