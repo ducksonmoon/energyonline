@@ -19,7 +19,7 @@ export function SellProductCard({
     <Card className={total === 0 ? "opacity-60" : undefined}>
       <div className="relative aspect-[4/3] bg-muted">
         {product.image ? (
-          <Image src={product.image} alt={product.name} fill sizes="240px" className="object-cover" />
+          <Image src={product.image} alt={product.name} fill sizes="240px" className="object-contain" />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3">
