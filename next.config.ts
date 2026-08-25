@@ -12,7 +12,9 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data:",
+      // blob: is needed for the admin product form's local image previews
+      // (URL.createObjectURL), not just remote product photos.
+      "img-src 'self' data: blob: https://*.arvanstorage.ir",
       "font-src 'self' data:",
       "connect-src 'self'",
       "frame-ancestors 'self'",
@@ -21,6 +23,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    // Product photos live in ArvanCloud object storage (not the local
+    // filesystem) — see src/lib/storage.ts. Covers both virtual-hosted
+    // style (bucket.s3.<region>.arvanstorage.ir) and any custom domain
+    // pointed at the bucket.
+    remotePatterns: [{ protocol: "https", hostname: "*.arvanstorage.ir" }],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

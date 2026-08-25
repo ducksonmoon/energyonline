@@ -8,6 +8,7 @@ import { writeFile, mkdir, unlink } from "fs/promises";
 import path from "path";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import { objectStorageEnabled, uploadObject, deleteObject, keyFromPublicUrl } from "@/lib/storage";
 
 const sizeArraySchema = z.array(z.object({ size: z.string().min(1), stock: z.coerce.number().int().min(0) }));
 
@@ -57,9 +58,27 @@ function validateImageFiles(files: File[]): string | null {
   return null;
 }
 
+// Uploaded product photos go to object storage (see src/lib/storage.ts) —
+// the app server's local disk isn't reliable for this: Next.js's static
+// file serving doesn't pick up files written after the server process
+// started, so anything saved to public/uploads/ during normal operation
+// (as opposed to at build time) 404s until the next deploy restarts it.
+// Local disk is kept only as a fallback for local dev when no bucket is
+// configured, so `npm run dev` keeps working without real credentials.
 async function saveUploadedImages(productId: string, files: File[]): Promise<string[]> {
   const real = files.filter((f) => f && f.size > 0);
   if (real.length === 0) return [];
+
+  if (objectStorageEnabled) {
+    const urls: string[] = [];
+    for (const file of real) {
+      const ext = ALLOWED_IMAGE_TYPES[file.type];
+      const filename = `${randomUUID()}${ext}`;
+      const buffer = Buffer.from(await file.arrayBuffer());
+      urls.push(await uploadObject(`products/${productId}/${filename}`, buffer, file.type));
+    }
+    return urls;
+  }
 
   const dir = path.join(process.cwd(), "public", "uploads", "products", productId);
   await mkdir(dir, { recursive: true });
@@ -72,6 +91,15 @@ async function saveUploadedImages(productId: string, files: File[]): Promise<str
     urls.push(`/uploads/products/${productId}/${filename}`);
   }
   return urls;
+}
+
+async function deleteUploadedImage(url: string): Promise<void> {
+  const key = keyFromPublicUrl(url);
+  if (key) {
+    await deleteObject(key).catch(() => {});
+    return;
+  }
+  await unlink(path.join(process.cwd(), "public", url)).catch(() => {});
 }
 
 export async function createProduct(_prevState: ProductFormState, formData: FormData): Promise<ProductFormState> {
@@ -158,7 +186,7 @@ export async function updateProduct(
       const images = await db.productImage.findMany({ where: { id: { in: ids }, productId } });
       await db.productImage.deleteMany({ where: { id: { in: ids } } });
       for (const img of images) {
-        await unlink(path.join(process.cwd(), "public", img.url)).catch(() => {});
+        await deleteUploadedImage(img.url);
       }
     }
   }
@@ -183,7 +211,7 @@ export async function deleteProduct(productId: string) {
   const images = await db.productImage.findMany({ where: { productId } });
   await db.product.delete({ where: { id: productId } });
   for (const img of images) {
-    await unlink(path.join(process.cwd(), "public", img.url)).catch(() => {});
+    await deleteUploadedImage(img.url);
   }
   revalidatePath("/");
   revalidatePath(`/product/${productId}`);
