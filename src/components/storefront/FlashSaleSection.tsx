@@ -55,7 +55,7 @@ export function FlashSaleSection({
         </div>
       </RevealOnScroll>
 
-      <div className="mx-auto mt-7 grid max-w-[1280px] grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="mx-auto mt-7 grid max-w-[1280px] grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
         {products.map((p, i) => (
           <motion.div
             key={p.id}
@@ -74,7 +74,9 @@ export function FlashSaleSection({
               }}
               className="cursor-pointer block text-right"
             >
-              <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-[var(--bg-alt)] text-[var(--ink-soft)]">
+              <div
+                className={`relative flex aspect-[4/5] items-center justify-center overflow-hidden text-[var(--ink-soft)] ${p.image ? "bg-white" : "bg-[var(--bg-alt)]"}`}
+              >
                 {p.image ? (
                   <Image
                     src={p.image}

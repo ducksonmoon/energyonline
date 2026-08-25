@@ -42,7 +42,7 @@ export function ProductDetailContent({ product, onAdded }: { product: ProductVM;
         <div
           className="aspect-[4/5] rounded-lg flex items-center justify-center relative mb-3 overflow-hidden"
           style={{
-            background: product.images[galleryIndex] ? undefined : "linear-gradient(155deg, var(--bg-alt), #ddd4c4)",
+            background: product.images[galleryIndex] ? "#fff" : "linear-gradient(155deg, var(--bg-alt), #ddd4c4)",
           }}
         >
           {product.images[galleryIndex] ? (

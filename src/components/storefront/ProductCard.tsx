@@ -34,7 +34,9 @@ export function ProductCard({
         }}
         className="cursor-pointer text-right w-full block"
       >
-        <div className="relative aspect-[4/5] rounded-md bg-[var(--bg-alt)] flex items-center justify-center text-[var(--ink-soft)] overflow-hidden">
+        <div
+          className={`relative aspect-[4/5] rounded-md flex items-center justify-center text-[var(--ink-soft)] overflow-hidden ${product.image ? "bg-white" : "bg-[var(--bg-alt)]"}`}
+        >
           {loaded ? (
             <>
               {product.image ? (
