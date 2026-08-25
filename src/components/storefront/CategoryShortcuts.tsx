@@ -118,25 +118,33 @@ export function CategoryShortcuts({
         className="flex justify-center gap-2.5 sm:gap-3.5 overflow-x-auto py-2.5 px-0.5 pb-3.5 cursor-grab active:cursor-grabbing select-none"
         style={{ overscrollBehaviorX: "contain", WebkitOverflowScrolling: "touch" }}
       >
-        {shortcuts.map((c) => (
-          <a
-            key={c.key}
-            href="#grid"
-            draggable={false}
-            onClick={(e) => {
-              e.preventDefault();
-              onSelect(c.key);
-            }}
-            className="group flex-none flex flex-col items-center gap-2 w-[92px] px-2.5 pt-4 pb-3.5 border border-[var(--line)] rounded-[4px] relative bg-[var(--bg)] cursor-pointer transition-transform duration-300 [transition-timing-function:cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:border-[var(--ink)]"
-            style={{ transformStyle: "preserve-3d" }}
-          >
-            <div className="absolute top-1.5 left-2 text-[10px] font-bold text-[var(--ink-soft)]">
-              {toFa(c.count)}
-            </div>
-            <CategoryIcon iconKey={c.iconKey} size={26} className="text-[var(--ink)]" />
-            <span className="text-[12.5px] font-bold">{c.label}</span>
-          </a>
-        ))}
+        {shortcuts.map((c, i) => {
+          const tint = i % 2 === 0 ? "var(--brand-red)" : "var(--accent)";
+          return (
+            <a
+              key={c.key}
+              href="#grid"
+              draggable={false}
+              onClick={(e) => {
+                e.preventDefault();
+                onSelect(c.key);
+              }}
+              className="group flex-none flex flex-col items-center gap-2 w-[92px] px-2.5 pt-4 pb-3.5 border border-[var(--line)] rounded-[4px] relative bg-[var(--bg)] cursor-pointer transition-transform duration-300 [transition-timing-function:cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:border-[var(--ink)]"
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              <div className="absolute top-1.5 left-2 text-[10px] font-bold text-[var(--ink-soft)]">
+                {toFa(c.count)}
+              </div>
+              <div
+                className="flex items-center justify-center w-11 h-11 rounded-full transition-transform duration-300 group-hover:scale-110"
+                style={{ background: `color-mix(in srgb, ${tint} 16%, transparent)` }}
+              >
+                <CategoryIcon iconKey={c.iconKey} size={22} className="text-[var(--ink)]" />
+              </div>
+              <span className="text-[12.5px] font-bold">{c.label}</span>
+            </a>
+          );
+        })}
       </div>
 
       {!atStart && (

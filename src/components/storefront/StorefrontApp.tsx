@@ -86,7 +86,7 @@ export function StorefrontApp({
       .map((p) => ({ p, total: totalStock(p.sizes) }))
       .filter((x) => x.total > 0)
       .sort((a, b) => a.total - b.total)
-      .slice(0, 2)
+      .slice(0, 3)
       .map(({ p, total }) => ({ catLabel: p.category.label, stockFa: `${toFa(total)} عدد`, iconKey: p.category.key }));
   }, [products]);
 

@@ -115,17 +115,21 @@ export default async function AdminProductsPage() {
                         )}
                       </TableCell>
                       <TableCell>{toFa(stock)}</TableCell>
-                      <TableCell className="flex gap-1.5 flex-wrap">
-                        {p.isNew && <Badge variant="secondary">تازه رسیده</Badge>}
-                        {hasFlash && <Badge variant="destructive">روز ویژه</Badge>}
-                        {offer && !hasFlash && <Badge>تخفیف</Badge>}
-                        {stock === 0 && <Badge variant="destructive">ناموجود</Badge>}
+                      <TableCell>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {p.isNew && <Badge variant="secondary">تازه رسیده</Badge>}
+                          {hasFlash && <Badge variant="destructive">روز ویژه</Badge>}
+                          {offer && !hasFlash && <Badge>تخفیف</Badge>}
+                          {stock === 0 && <Badge variant="destructive">ناموجود</Badge>}
+                        </div>
                       </TableCell>
-                      <TableCell className="flex items-center gap-1">
-                        <Link href={`/admin/products/${p.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
-                          ویرایش
-                        </Link>
-                        <DeleteProductButton productId={p.id} productName={p.name} />
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Link href={`/admin/products/${p.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+                            ویرایش
+                          </Link>
+                          <DeleteProductButton productId={p.id} productName={p.name} />
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
