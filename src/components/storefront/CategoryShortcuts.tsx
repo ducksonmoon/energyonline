@@ -115,7 +115,7 @@ export function CategoryShortcuts({
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onClickCapture={handleClickCapture}
-        className="flex gap-2.5 sm:gap-3.5 overflow-x-auto py-2.5 px-0.5 pb-3.5 cursor-grab active:cursor-grabbing select-none"
+        className="flex justify-center gap-2.5 sm:gap-3.5 overflow-x-auto py-2.5 px-0.5 pb-3.5 cursor-grab active:cursor-grabbing select-none"
         style={{ overscrollBehaviorX: "contain", WebkitOverflowScrolling: "touch" }}
       >
         {shortcuts.map((c) => (
