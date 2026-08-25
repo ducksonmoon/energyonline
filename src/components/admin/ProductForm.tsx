@@ -68,10 +68,15 @@ export function ProductForm({
   }
 
   function handleFilesSelected(e: ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
-    newImagePreviews.forEach((url) => URL.revokeObjectURL(url));
-    setNewImages(files);
-    setNewImagePreviews(files.map((f) => URL.createObjectURL(f)));
+    // A native file input's FileList is replaced (not merged) every time the
+    // user opens the picker again, so we merge onto our own running list and
+    // sync it back to the input rather than trusting e.target.files directly.
+    const picked = Array.from(e.target.files ?? []);
+    if (picked.length === 0) return;
+    const merged = [...newImages, ...picked];
+    setNewImages(merged);
+    setNewImagePreviews((prev) => [...prev, ...picked.map((f) => URL.createObjectURL(f))]);
+    syncFileInput(merged);
   }
 
   function removeNewImage(index: number) {

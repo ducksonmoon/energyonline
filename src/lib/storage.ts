@@ -23,6 +23,12 @@ function getClient(): S3Client {
 
 // Uploads to the configured bucket and returns the object's public URL. Only
 // call this when objectStorageEnabled is true.
+//
+// No ACL header here on purpose: most S3-compatible buckets (ArvanCloud
+// included) reject PutObject requests that set an ACL unless per-object
+// ACLs were explicitly enabled on the bucket — the standard way to make
+// objects public is a bucket-level public-read policy set once in the
+// provider's console, not a header on every upload.
 export async function uploadObject(key: string, body: Buffer, contentType: string): Promise<string> {
   await getClient().send(
     new PutObjectCommand({
@@ -30,7 +36,6 @@ export async function uploadObject(key: string, body: Buffer, contentType: strin
       Key: key,
       Body: body,
       ContentType: contentType,
-      ACL: "public-read",
     })
   );
   return `${PUBLIC_URL}/${key}`;

@@ -119,8 +119,23 @@ export async function createProduct(_prevState: ProductFormState, formData: Form
   const imageError = validateImageFiles(files);
   if (imageError) return { error: imageError };
 
-  const product = await db.product.create({
+  // Upload images before touching the database: a product id is needed for
+  // the storage key, so it's generated here rather than left to Prisma's
+  // default, and uploading first means a storage failure (e.g. a
+  // misconfigured bucket) never leaves behind a product record with no
+  // photos and no way for the admin to know why.
+  const productId = randomUUID();
+  let urls: string[];
+  try {
+    urls = await saveUploadedImages(productId, files);
+  } catch (err) {
+    console.error("Product image upload failed:", err);
+    return { error: "آپلود تصویر با خطا مواجه شد. دوباره امتحان کن — اگر باز هم نشد، محصول رو بدون تصویر ذخیره کن و بعداً از صفحه ویرایش عکس اضافه کن." };
+  }
+
+  await db.product.create({
     data: {
+      id: productId,
       name: parsed.data.name,
       categoryId: parsed.data.categoryId,
       description: parsed.data.description,
@@ -129,13 +144,9 @@ export async function createProduct(_prevState: ProductFormState, formData: Form
       flashPrice: parseOptionalPrice(formData, "flashPrice"),
       isNew: formData.get("isNew") === "on",
       sizes: { create: sizes },
+      images: urls.length > 0 ? { create: urls.map((url, i) => ({ url, sortOrder: i })) } : undefined,
     },
   });
-
-  const urls = await saveUploadedImages(product.id, files);
-  if (urls.length > 0) {
-    await db.productImage.createMany({ data: urls.map((url, i) => ({ productId: product.id, url, sortOrder: i })) });
-  }
 
   revalidatePath("/");
   revalidatePath("/admin/products");
@@ -162,6 +173,17 @@ export async function updateProduct(
   const files = formData.getAll("images").filter((f): f is File => f instanceof File && f.size > 0);
   const imageError = validateImageFiles(files);
   if (imageError) return { error: imageError };
+
+  // Upload before any DB write, same reasoning as createProduct: a storage
+  // failure here should never leave the product half-updated (price/sizes
+  // changed but the new photo silently missing).
+  let urls: string[];
+  try {
+    urls = await saveUploadedImages(productId, files);
+  } catch (err) {
+    console.error("Product image upload failed:", err);
+    return { error: "آپلود تصویر با خطا مواجه شد. دوباره امتحان کن — بقیه تغییرات هنوز ذخیره نشده." };
+  }
 
   await db.product.update({
     where: { id: productId },
@@ -191,7 +213,6 @@ export async function updateProduct(
     }
   }
 
-  const urls = await saveUploadedImages(productId, files);
   if (urls.length > 0) {
     const existingCount = await db.productImage.count({ where: { productId } });
     await db.productImage.createMany({
