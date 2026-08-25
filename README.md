@@ -1,7 +1,8 @@
 # انرژی — فروشگاه پوشاک
 
-Persian-language, RTL storefront for "انرژی" (Energy), a clothing shop in Sari, Iran, plus an
-admin dashboard for managing products, stock, discounts, categories, and store settings.
+Persian-language, RTL storefront for "انرژی" (Energy), an original-Turkish-clothing shop with a
+branch in Sari, Iran, plus an admin dashboard for managing products, stock, discounts, categories,
+and store settings.
 
 ## Stack
 

@@ -16,14 +16,14 @@ const lalezar = Lalezar({
   weight: "400",
 });
 
-const SITE_NAME = "انرژی | فروشگاه پوشاک ساری";
+const SITE_NAME = "انرژی | پوشاک اورجینال ترکیه";
 const SITE_DESCRIPTION = "موجودی واقعی فروشگاه انرژی — تعداد مشخص، بدون تکرار. وقتی تموم شد، تموم شد.";
 
 export const metadata: Metadata = {
   metadataBase: SITE_URL ? new URL(SITE_URL) : undefined,
   title: { default: SITE_NAME, template: "%s | انرژی" },
   description: SITE_DESCRIPTION,
-  keywords: ["فروشگاه پوشاک ساری", "خرید لباس ساری", "انرژی", "پوشاک مردانه", "هودی", "کاپشن", "تیشرت"],
+  keywords: ["پوشاک اورجینال ترکیه", "خرید لباس ترکیه", "انرژی", "پوشاک مردانه", "هودی", "کاپشن", "تیشرت"],
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
