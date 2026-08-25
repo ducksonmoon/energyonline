@@ -68,7 +68,61 @@ export function CategoriesManager({ categories }: { categories: CategoryRow[] })
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border bg-card">
+      {/* Mobile: a card per category — icon/title/key/order/actions don't fit a 5-col table on a narrow screen. */}
+      <div className="space-y-3 sm:hidden">
+        {rows.map((row) => (
+          <div key={row.id} className="rounded-xl border bg-card p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <Select
+                items={ICON_OPTIONS.map((o) => ({ value: o.key, label: o.label }))}
+                value={row.iconKey}
+                onValueChange={(v) => patchRow(row.id, { iconKey: String(v) })}
+              >
+                <SelectTrigger className="w-14 shrink-0">
+                  <CategoryIcon iconKey={row.iconKey} size={18} />
+                </SelectTrigger>
+                <SelectContent>
+                  {ICON_OPTIONS.map((o) => (
+                    <SelectItem key={o.key} value={o.key}>
+                      <span className="flex items-center gap-2">
+                        <CategoryIcon iconKey={o.key} size={16} /> {o.label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                value={row.label}
+                onChange={(e) => patchRow(row.id, { label: e.target.value })}
+                className="flex-1"
+              />
+            </div>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span>کلید: {row.key}</span>
+              <label className="flex items-center gap-1.5">
+                ترتیب:
+                <Input
+                  type="number"
+                  value={row.sortOrder}
+                  onChange={(e) => patchRow(row.id, { sortOrder: Number(e.target.value) })}
+                  className="w-16"
+                />
+              </label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button type="button" size="sm" variant="outline" onClick={() => saveRow(row)} disabled={pending} className="flex-1">
+                ذخیره
+              </Button>
+              <Button type="button" size="sm" variant="ghost" onClick={() => removeRow(row.id)} disabled={pending}>
+                حذف
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop/tablet: full table */}
+      <div className="hidden rounded-xl border bg-card sm:block">
         <Table>
           <TableHeader>
             <TableRow>

@@ -78,12 +78,12 @@ export function SellScreen({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold">ثبت فروش</h1>
           <p className="text-sm text-muted-foreground">با تپ روی سایز، فروش رو سریع ثبت کن</p>
         </div>
-        <Card className="shrink-0">
+        <Card className="sm:self-start sm:shrink-0">
           <CardHeader className="pb-2">
             <CardDescription>فروش امروز</CardDescription>
             <CardTitle className="text-3xl">{toFa(todayCount)}</CardTitle>
