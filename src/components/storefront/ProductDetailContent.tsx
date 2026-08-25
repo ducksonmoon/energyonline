@@ -51,7 +51,7 @@ export function ProductDetailContent({ product, onAdded }: { product: ProductVM;
               alt={product.name}
               fill
               sizes="(max-width: 1023px) 94vw, 440px"
-              className="object-cover"
+              className="object-contain"
               priority
             />
           ) : (

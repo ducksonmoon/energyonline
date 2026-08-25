@@ -43,7 +43,7 @@ export function ProductCard({
                   alt={product.name}
                   fill
                   sizes="(max-width: 640px) 45vw, 220px"
-                  className="object-cover"
+                  className="object-contain"
                 />
               ) : (
                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-50">
