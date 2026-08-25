@@ -25,10 +25,10 @@ export function Hero({ heroStockLine, heroTags }: { heroStockLine: string; heroT
           همین الان، فقط همینا موجوده
         </div>
         <div className="text-[clamp(22px,4vw,34px)] font-extrabold leading-[1.35] max-w-[480px] [animation:heroWordIn_.8s_cubic-bezier(.16,1,.3,1)_both]">
-          پوشاک اورجینال ترکیه، تعداد محدود
+          موجودی واقعی، تعداد محدود
         </div>
         <div className="text-[13px] sm:text-sm leading-[1.8] text-[var(--ink-soft)] max-w-[420px]">
-          هر تیکه فقط یه‌بار میاد. وقتی تموم شد، تموم شد.
+          از برندای اورجینال ترکیه؛ هر تیکه فقط یه‌بار میاد، وقتی تموم شد تموم شد.
         </div>
         <div className="text-[12px] sm:text-[12.5px] text-[var(--ink-soft)]">{heroStockLine}</div>
         <a
