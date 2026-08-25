@@ -72,7 +72,7 @@ Configure these before the first run:
 
 - **Repository secrets** (Settings → Secrets and variables → Actions → *Secrets*):
   `SERVER_HOST`, `SERVER_USER`, `SERVER_SSH_KEY` (private key with access to the server),
-  `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`.
+  `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and the object storage secrets below.
 - **Repository variables** (same page, *Variables* tab, optional): `APP_DIR` (default
   `/home/ubuntu/apps/energyonline`), `APP_NAME` (default `energyonline`), `SERVER_PORT` (default
   `22`), `PUBLIC_DOMAIN` / `CERTBOT_EMAIL` (see below), `GA_MEASUREMENT_ID` / `CLARITY_PROJECT_ID`
@@ -91,6 +91,18 @@ request a trusted Let's Encrypt certificate via certbot and switch nginx over to
 [analytics.google.com](https://analytics.google.com), looks like `G-XXXXXXXXXX`) and/or
 `CLARITY_PROJECT_ID` (from [clarity.microsoft.com](https://clarity.microsoft.com)) and re-run the
 workflow. Both only load on the public storefront, never in `/admin`.
+
+**Product photo storage**: uploaded product photos go to ArvanCloud object storage (S3-compatible),
+not the app server's local disk — this isn't a style choice, it fixes a real bug. Next.js's static
+file serving only picks up `public/uploads/...` files that existed when the server process
+started; anything an admin uploads afterward 404s (`_next/image` fails with "The requested
+resource isn't a valid image") until the next deploy restarts the process. Object storage sidesteps
+that entirely — uploads are immediately servable from ArvanCloud's own URL, independent of the app
+server. Set repository secrets `ARVAN_S3_ENDPOINT` (e.g. `https://s3.ir-thr-at1.arvanstorage.ir`),
+`ARVAN_S3_BUCKET`, `ARVAN_S3_ACCESS_KEY`, `ARVAN_S3_SECRET_KEY`, and `ARVAN_S3_PUBLIC_URL` (the
+bucket's public base URL, or a custom domain pointed at it) and re-run the workflow. Leave all five
+unset for local dev — uploads then fall back to local disk, which is fine there since `next dev`
+doesn't have this problem.
 
 **SEO**: each product has its own indexable page at `/product/[id]` (proper `<title>`/description,
 Open Graph + Twitter cards, JSON-LD `Product` schema), plus `/sitemap.xml` and `/robots.txt`
