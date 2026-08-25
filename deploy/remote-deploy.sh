@@ -136,7 +136,11 @@ server {
     ssl_certificate     $SSL_DIR/selfsigned.crt;
     ssl_certificate_key $SSL_DIR/selfsigned.key;
 
-    client_max_body_size 10m;
+    # The app allows up to 5MB per product photo with no cap on how many
+    # can be attached at once, so a handful of phone photos in one save
+    # can add up past a low limit here — nginx would hard-reject the whole
+    # request (413) before it even reaches the app.
+    client_max_body_size 25m;
 
     gzip on;
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
@@ -145,6 +149,27 @@ server {
     location = /maintenance.html {
         root $MAINTENANCE_DIR;
         internal;
+    }
+
+    # Admin routes get a longer read timeout than the public site: saving a
+    # product uploads its photos to object storage as part of the same
+    # request, which is one or more real network round trips (parallelized
+    # in app code, but still bounded by the slowest one) and can run past
+    # the public site's fail-fast window on a slow connection. This is
+    # low-traffic, owner-only usage, so a longer timeout here doesn't trade
+    # away the public site's protection against a genuinely stuck backend.
+    location ^~ /admin/ {
+        limit_req zone=energyonline burst=100 nodelay;
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 60s;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
     }
 
     location / {
