@@ -28,7 +28,7 @@ export function SiteFooter({
             alt="انرژی"
             width={140}
             height={79}
-            className="mb-2.5 h-8 w-auto"
+            className="mb-2.5 h-5 w-auto"
           />
           <div className="text-[13px] leading-[1.9] max-w-[240px] text-[rgba(246,242,236,.6)]">
             یک فروشگاه، موجودی واقعی، بدون تکرار.

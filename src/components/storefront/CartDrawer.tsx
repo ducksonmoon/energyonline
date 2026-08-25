@@ -124,6 +124,17 @@ export function CartDrawer({
                     className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] text-[var(--bg)] hover:opacity-90 py-2.5 text-sm font-bold"
                   >
                     پیام در اینستاگرام <span dir="ltr">@{instagramHandle}</span>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      style={{ transform: "scaleX(-1)" }}
+                    >
+                      <path d="M5 12h13M13 6l6 6-6 6" />
+                    </svg>
                   </a>
                 )}
               </div>
