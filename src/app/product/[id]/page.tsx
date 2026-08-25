@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps<"/product/[id]">): 
   const product = await getProductById(id);
   if (!product) return {};
 
-  const description = product.description || `${product.name} — خرید از فروشگاه انرژی ساری`;
+  const description = product.description || `${product.name} — خرید از فروشگاه انرژی`;
   const socialTitle = `${product.name} | انرژی`;
   const image = product.images[0]?.url;
 
