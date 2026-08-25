@@ -16,10 +16,13 @@ export function ProductGrid({
   onOpen: (id: string) => void;
   emptyMessage?: string;
 }) {
+  // Products are the actual thing being sold — capped one column lower than
+  // before at every breakpoint so each photo reads as the focus of the page
+  // instead of a small tile in a dense grid.
   const cols =
     gridDensity === "compact"
-      ? "grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
-      : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
+      ? "grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5"
+      : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4";
   const gap = gridDensity === "compact" ? "gap-2.5 sm:gap-3" : "gap-3.5 sm:gap-5";
 
   return (
