@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function SiteFooter({
   address,
   phone,
@@ -21,7 +23,13 @@ export function SiteFooter({
     <div className="bg-[var(--ink)] text-[var(--bg)] px-5 pt-14 pb-6.5">
       <div className="max-w-[1280px] mx-auto grid gap-9" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))" }}>
         <div>
-          <div className="font-extrabold text-lg mb-2.5">انرژی</div>
+          <Image
+            src="/brand/energie-logo-light.png"
+            alt="انرژی"
+            width={140}
+            height={79}
+            className="mb-2.5 h-8 w-auto"
+          />
           <div className="text-[13px] leading-[1.9] max-w-[240px] text-[rgba(246,242,236,.6)]">
             یک فروشگاه، موجودی واقعی، بدون تکرار.
           </div>
