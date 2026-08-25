@@ -18,11 +18,27 @@ export async function processProductImage(buffer: Buffer, contentType: string): 
     return { buffer, contentType, ext: ".gif" };
   }
 
-  const resized = await sharp(buffer)
-    .rotate() // respects EXIF orientation before resizing, then strips it
-    .resize({ width: MAX_DIMENSION, height: MAX_DIMENSION, fit: "inside", withoutEnlargement: true })
-    .jpeg({ quality: JPEG_QUALITY })
-    .toBuffer();
+  async function encode(pipeline: ReturnType<typeof sharp>): Promise<Buffer> {
+    return pipeline
+      .resize({ width: MAX_DIMENSION, height: MAX_DIMENSION, fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: JPEG_QUALITY })
+      .toBuffer();
+  }
+
+  let resized: Buffer;
+  try {
+    // Product photos are routinely shot small-and-centered on a big plain
+    // backdrop (mockup-style), which leaves a lot of empty margin baked
+    // into the file itself — the product card's object-cover crop can only
+    // trim whichever edge overflows its box, not empty space inside the
+    // photo. trim() auto-crops uniform-color padding from the edges before
+    // resizing, so the actual garment fills the frame instead. It throws
+    // on an image with no uniform border to find (e.g. a flat test swatch
+    // with no edges at all), so falls back to the untrimmed image then.
+    resized = await encode(sharp(buffer).rotate().trim());
+  } catch {
+    resized = await encode(sharp(buffer).rotate());
+  }
 
   return { buffer: resized, contentType: "image/jpeg", ext: ".jpg" };
 }
