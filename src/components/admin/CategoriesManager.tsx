@@ -172,13 +172,15 @@ export function CategoriesManager({ categories }: { categories: CategoryRow[] })
                     className="w-16"
                   />
                 </TableCell>
-                <TableCell className="flex gap-1">
-                  <Button type="button" size="sm" variant="outline" onClick={() => saveRow(row)} disabled={pending}>
-                    ذخیره
-                  </Button>
-                  <Button type="button" size="sm" variant="ghost" onClick={() => removeRow(row.id)} disabled={pending}>
-                    حذف
-                  </Button>
+                <TableCell>
+                  <div className="flex gap-1">
+                    <Button type="button" size="sm" variant="outline" onClick={() => saveRow(row)} disabled={pending}>
+                      ذخیره
+                    </Button>
+                    <Button type="button" size="sm" variant="ghost" onClick={() => removeRow(row.id)} disabled={pending}>
+                      حذف
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
