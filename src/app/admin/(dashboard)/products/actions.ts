@@ -9,6 +9,7 @@ import path from "path";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { objectStorageEnabled, uploadObject, deleteObject, keyFromPublicUrl } from "@/lib/storage";
+import { processProductImage } from "@/lib/image";
 
 const sizeArraySchema = z.array(z.object({ size: z.string().min(1), stock: z.coerce.number().int().min(0) }));
 
@@ -69,28 +70,35 @@ async function saveUploadedImages(productId: string, files: File[]): Promise<str
   const real = files.filter((f) => f && f.size > 0);
   if (real.length === 0) return [];
 
+  // Uploads run in parallel, not one-at-a-time: each one is a full network
+  // round trip to object storage, so a sequential loop made adding a few
+  // photos take the sum of every upload's latency instead of the slowest
+  // one — easily enough to feel "really slow" or even trip nginx's
+  // proxy_read_timeout on a handful of images. Promise.all preserves the
+  // input order in its results regardless of which upload finishes first,
+  // so image 1 stays the main photo either way.
   if (objectStorageEnabled) {
-    const urls: string[] = [];
-    for (const file of real) {
-      const ext = ALLOWED_IMAGE_TYPES[file.type];
-      const filename = `${randomUUID()}${ext}`;
-      const buffer = Buffer.from(await file.arrayBuffer());
-      urls.push(await uploadObject(`products/${productId}/${filename}`, buffer, file.type));
-    }
-    return urls;
+    return Promise.all(
+      real.map(async (file) => {
+        const rawBuffer = Buffer.from(await file.arrayBuffer());
+        const { buffer, contentType, ext } = await processProductImage(rawBuffer, file.type);
+        const filename = `${randomUUID()}${ext}`;
+        return uploadObject(`products/${productId}/${filename}`, buffer, contentType);
+      })
+    );
   }
 
   const dir = path.join(process.cwd(), "public", "uploads", "products", productId);
   await mkdir(dir, { recursive: true });
-  const urls: string[] = [];
-  for (const file of real) {
-    const ext = ALLOWED_IMAGE_TYPES[file.type];
-    const filename = `${randomUUID()}${ext}`;
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(dir, filename), buffer);
-    urls.push(`/uploads/products/${productId}/${filename}`);
-  }
-  return urls;
+  return Promise.all(
+    real.map(async (file) => {
+      const rawBuffer = Buffer.from(await file.arrayBuffer());
+      const { buffer, ext } = await processProductImage(rawBuffer, file.type);
+      const filename = `${randomUUID()}${ext}`;
+      await writeFile(path.join(dir, filename), buffer);
+      return `/uploads/products/${productId}/${filename}`;
+    })
+  );
 }
 
 async function deleteUploadedImage(url: string): Promise<void> {
