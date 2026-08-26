@@ -76,11 +76,6 @@ export function StorefrontApp({
       .map(({ p, total }) => ({ catLabel: p.category.label, stockFa: `${toFa(total)} عدد`, iconKey: p.category.key }));
   }, [products]);
 
-  const heroStockLine = useMemo(() => {
-    const inStock = products.filter((p) => totalStock(p.sizes) > 0).length;
-    return `${toFa(inStock)} مدل از ${toFa(products.length)} تا الان موجوده`;
-  }, [products]);
-
   const selectedProduct = selectedProductId ? productsVM.find((p) => p.id === selectedProductId) ?? null : null;
 
   return (
@@ -91,7 +86,7 @@ export function StorefrontApp({
       {flashActive && <FlashSaleBanner endsAt={settings.flashSaleEndsAt} bannerText={settings.flashSaleBannerText} />}
       <TopBar onCartClick={() => setCartOpen(true)} />
 
-      <Hero heroStockLine={heroStockLine} heroTags={heroTags} />
+      <Hero heroTags={heroTags} />
       {flashActive && (
         <FlashSaleSection
           endsAt={settings.flashSaleEndsAt}

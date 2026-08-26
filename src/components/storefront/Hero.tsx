@@ -11,7 +11,7 @@ const TAG_POSITIONS = [
   { className: "top-[8%] left-[6%] rotate-[5deg]", anim: "animate-[floatA_5s_ease-in-out_infinite_.6s]" },
 ];
 
-export function Hero({ heroStockLine, heroTags }: { heroStockLine: string; heroTags: HeroTag[] }) {
+export function Hero({ heroTags }: { heroTags: HeroTag[] }) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   function handleMove(e: MouseEvent<HTMLDivElement>) {
@@ -34,9 +34,13 @@ export function Hero({ heroStockLine, heroTags }: { heroStockLine: string; heroT
           جدیدترین انتخاب‌ها
         </div>
         <div className="text-[clamp(22px,4vw,34px)] font-extrabold leading-[1.35] max-w-[480px] [animation:heroWordIn_.8s_cubic-bezier(.16,1,.3,1)_both]">
-          منتخب لباس‌های اورجینال از ترکیه، با تعداد محدود.
+          منتخب لباس‌های اورجینال از ترکیه.
         </div>
-        <div className="text-[12px] sm:text-[12.5px] text-[var(--ink-soft)]">{heroStockLine}</div>
+        <div className="text-[13px] sm:text-sm leading-[1.8] text-[var(--ink-soft)] max-w-[420px]">
+          بهترین محصولات را با مناسب‌ترین قیمت برای شما فراهم می‌کنیم؛ تمام محصولات اورجینال و خریداری‌شده از ترکیه،
+          هم‌اکنون در فروشگاه موجود هستند. برای سفارش‌های خاص نیز کافی‌ست به ما اطلاع دهید تا محصول موردنظرتان را
+          مستقیماً برایتان تهیه کنیم.
+        </div>
         <a
           href="#grid"
           className="mt-1.5 inline-flex items-center gap-2 rounded-[3px] bg-[var(--ink)] text-[var(--bg)] font-bold text-sm px-5 py-3 sm:px-[22px] sm:py-3.5 transition-transform active:scale-95 hover:scale-105"
