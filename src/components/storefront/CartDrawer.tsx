@@ -92,9 +92,13 @@ export function CartDrawer({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold truncate">{item.name}</div>
-                  <div className="text-xs text-[var(--ink-soft)]">
-                    سایز {item.size}
-                    {item.qty > 1 && ` · ${toFa(item.qty)} عدد`}
+                  <div className="flex items-center gap-1.5 text-xs text-[var(--ink-soft)]">
+                    <span>سایز {item.size}</span>
+                    {item.qty > 1 && (
+                      <span className="rounded-full bg-[var(--bg-alt)] px-1.5 py-[1px] text-[11px] font-bold text-[var(--ink)]">
+                        ×{toFa(item.qty)}
+                      </span>
+                    )}
                   </div>
                   {available ? (
                     <div className="text-xs font-semibold mt-0.5">{formatToman(item.price * item.qty)}</div>
