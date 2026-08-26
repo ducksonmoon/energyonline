@@ -81,12 +81,13 @@ export function ProductDetailContent({ product, onAdded }: { product: ProductVM;
               <button
                 key={img + i}
                 onClick={() => setGalleryIndex(i)}
-                className="w-11 h-[54px] rounded-[5px] cursor-pointer"
+                className="relative w-11 h-[54px] rounded-[5px] cursor-pointer overflow-hidden bg-white"
                 style={{
-                  background: i === galleryIndex ? "var(--ink)" : "var(--bg-alt)",
                   border: i === galleryIndex ? "2px solid var(--accent)" : "1px solid var(--line)",
                 }}
-              />
+              >
+                <Image src={img} alt="" fill sizes="44px" className="object-contain" />
+              </button>
             ))}
           </div>
         )}
