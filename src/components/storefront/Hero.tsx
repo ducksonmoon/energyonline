@@ -34,7 +34,7 @@ export function Hero({ heroTags }: { heroTags: HeroTag[] }) {
           جدیدترین انتخاب‌ها
         </div>
         <div className="text-[clamp(22px,4vw,34px)] font-extrabold leading-[1.35] max-w-[480px] [animation:heroWordIn_.8s_cubic-bezier(.16,1,.3,1)_both]">
-          منتخب لباس‌های اورجینال از ترکیه، با تعداد محدود.
+          منتخب لباس‌های اورجینال از ترکیه.
         </div>
         <div className="text-[13px] sm:text-sm leading-[1.8] text-[var(--ink-soft)] max-w-[420px]">
           بهترین محصولات را با مناسب‌ترین قیمت برای شما فراهم می‌کنیم؛ تمام محصولات اورجینال و خریداری‌شده از ترکیه،
