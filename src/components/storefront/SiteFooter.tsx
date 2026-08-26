@@ -3,6 +3,8 @@ import Image from "next/image";
 export function SiteFooter({
   address,
   mapUrl,
+  mapLat,
+  mapLng,
   phone,
   phoneTurkey,
   hoursWeekday,
@@ -13,6 +15,8 @@ export function SiteFooter({
 }: {
   address: string;
   mapUrl: string;
+  mapLat: number;
+  mapLng: number;
   phone: string;
   phoneTurkey: string;
   hoursWeekday: string;
@@ -39,17 +43,26 @@ export function SiteFooter({
         <div>
           <div className="text-xs tracking-[.08em] text-[rgba(246,242,236,.5)] mb-3">آدرس فروشگاه</div>
           <div className="text-[13px] leading-[1.9] text-[rgba(246,242,236,.85)] mb-3.5">{address}</div>
+          <div className="w-full aspect-video rounded-md overflow-hidden relative bg-[rgba(246,242,236,.06)]">
+            <iframe
+              src={`https://www.google.com/maps?q=${mapLat},${mapLng}&z=16&output=embed`}
+              className="absolute inset-0 h-full w-full border-0 grayscale-[0.3] contrast-[1.05]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="نقشه فروشگاه"
+            />
+          </div>
           <a
             href={mapUrl}
             target="_blank"
             rel="noreferrer"
-            className="w-full aspect-video bg-[rgba(246,242,236,.06)] rounded-md flex items-center justify-center text-[rgba(246,242,236,.4)] hover:text-[rgba(246,242,236,.7)] text-xs gap-1.5 transition-colors"
+            className="mt-2 inline-flex items-center gap-1.5 text-xs text-[rgba(246,242,236,.6)] hover:text-[rgba(246,242,236,.9)] transition-colors"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z" />
               <circle cx="12" cy="9" r="2.4" />
             </svg>
-            نقشه فروشگاه
+            مسیریابی در گوگل‌مپ
           </a>
         </div>
         <div>

@@ -65,9 +65,9 @@ export function CartDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      {/* Both cart triggers (TopBar's icon, the floating MiniCart pill) sit
-          on the physical left in this RTL layout, so the drawer opens from
-          the same side instead of the component's LTR-oriented default. */}
+      {/* The cart trigger (TopBar's icon) sits on the physical left in this
+          RTL layout, so the drawer opens from the same side instead of the
+          component's LTR-oriented default. */}
       <SheetContent side="left" className="energy-root bg-[var(--bg)] text-[var(--ink)]" dir="rtl">
         <SheetHeader>
           <SheetTitle className="text-[var(--ink)]" style={{ fontFamily: "var(--font-lalezar)" }}>
@@ -87,8 +87,17 @@ export function CartDrawer({
                 className="flex items-center gap-3 border-b border-[var(--line)] pb-3"
                 style={{ opacity: available ? 1 : 0.5 }}
               >
-                <div className="w-14 h-16 rounded-md bg-[var(--bg-alt)] overflow-hidden relative flex-none">
-                  {item.image && <Image src={item.image} alt={item.name} fill className="object-cover" />}
+                <div
+                  className={`w-14 h-16 rounded-md overflow-hidden relative flex-none flex items-center justify-center text-[var(--ink-soft)] ${item.image ? "bg-white" : "bg-[var(--bg-alt)]"}`}
+                >
+                  {item.image ? (
+                    <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3">
+                      <path d="M9 4h6l1 2h3a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h3z" />
+                      <path d="M9 4a3 3 0 006 0" />
+                    </svg>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold truncate">{item.name}</div>

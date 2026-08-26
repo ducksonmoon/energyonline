@@ -81,6 +81,35 @@ export function SettingsForm({ settings }: { settings: StoreSettings }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
+          <Label htmlFor="mapLat">عرض جغرافیایی (Latitude)</Label>
+          <Input
+            id="mapLat"
+            name="mapLat"
+            type="number"
+            step="any"
+            defaultValue={settings.mapLat}
+            required
+            dir="ltr"
+            className="text-right"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="mapLng">طول جغرافیایی (Longitude)</Label>
+          <Input
+            id="mapLng"
+            name="mapLng"
+            type="number"
+            step="any"
+            defaultValue={settings.mapLng}
+            required
+            dir="ltr"
+            className="text-right"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
           <Label htmlFor="phone">تلفن فروشگاه</Label>
           <Input id="phone" name="phone" defaultValue={settings.phone} required dir="ltr" className="text-right" />
         </div>

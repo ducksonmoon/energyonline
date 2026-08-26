@@ -15,6 +15,8 @@ const schema = z.object({
   gridDensity: z.enum(["comfortable", "compact"]),
   address: z.string().min(1),
   mapUrl: z.string().url("لینک نقشه معتبر نیست"),
+  mapLat: z.coerce.number().min(-90).max(90, "عرض جغرافیایی نامعتبر است"),
+  mapLng: z.coerce.number().min(-180).max(180, "طول جغرافیایی نامعتبر است"),
   phone: z.string().min(1),
   phoneTurkey: z.string().min(1),
   hoursWeekday: z.string().min(1),

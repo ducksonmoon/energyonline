@@ -17,6 +17,8 @@ const securityHeaders = [
       "img-src 'self' data: blob: https://*.arvanstorage.ir",
       "font-src 'self' data:",
       "connect-src 'self'",
+      // The footer's embedded store-location map is a Google Maps iframe.
+      "frame-src https://www.google.com",
       "frame-ancestors 'self'",
     ].join("; "),
   },

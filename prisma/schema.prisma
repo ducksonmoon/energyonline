@@ -73,9 +73,15 @@ model StoreSettings {
   showCountdown   Boolean   @default(true)
   discountEndsAt  DateTime?
   address         String    @default("ساری، خیابان فرهنگ")
-  /// Link shown as "نقشه فروشگاه" in the footer — a Google Maps place/share
-  /// link (short links like maps.app.goo.gl work fine), opened in a new tab.
+  /// "باز کردن در گوگل‌مپ" link under the footer's embedded map — a Google
+  /// Maps place/share link (short links like maps.app.goo.gl work fine),
+  /// opened in a new tab.
   mapUrl          String    @default("https://maps.app.goo.gl/RtA3aCbnWFHJUugn6")
+  /// Coordinates the footer's embedded map iframe centers on. Kept separate
+  /// from mapUrl because a maps.app.goo.gl short link can't be used directly
+  /// as an iframe src (it redirects, and the redirect target blocks framing).
+  mapLat          Float     @default(36.560164)
+  mapLng          Float     @default(53.063765)
   phone           String    @default("011-33305327")
   /// Landline/mobile for coordinating orders sourced from Turkey (see the "سفارش از ترکیه" section).
   phoneTurkey     String    @default("+90 531 733 2665")
