@@ -10,7 +10,6 @@ import { CategoryNav, type NavCategory } from "@/components/storefront/CategoryN
 import { SearchBar } from "@/components/storefront/SearchBar";
 import { ProductGrid } from "@/components/storefront/ProductGrid";
 import { ProductDetailPanel } from "@/components/storefront/ProductDetailPanel";
-import { MiniCart } from "@/components/storefront/MiniCart";
 import { CartDrawer } from "@/components/storefront/CartDrawer";
 import { FaqSection } from "@/components/storefront/FaqSection";
 import { InstagramCta } from "@/components/storefront/InstagramCta";
@@ -58,14 +57,19 @@ export function StorefrontApp({
     return list;
   }, [productsVM, category, search]);
 
-  const navCategories: NavCategory[] = useMemo(
-    () => [
+  // A filter pill for a category (or "تخفیف‌ها") with nothing behind it just
+  // clicks through to an empty grid — with only a couple of products live,
+  // that was most of the nav. Only show pills that currently have at least
+  // one product.
+  const navCategories: NavCategory[] = useMemo(() => {
+    const hasOffers = productsVM.some((p) => p.isOffer);
+    const nonEmptyCategories = categories.filter((c) => products.some((p) => p.category.key === c.key));
+    return [
       { key: "all", label: "همه" },
-      { key: "offers", label: "تخفیف‌ها" },
-      ...categories.map((c) => ({ key: c.key, label: c.label })),
-    ],
-    [categories]
-  );
+      ...(hasOffers ? [{ key: "offers", label: "تخفیف‌ها" }] : []),
+      ...nonEmptyCategories.map((c) => ({ key: c.key, label: c.label })),
+    ];
+  }, [categories, products, productsVM]);
 
   const heroTags: HeroTag[] = useMemo(() => {
     return products
@@ -115,6 +119,8 @@ export function StorefrontApp({
       <SiteFooter
         address={settings.address}
         mapUrl={settings.mapUrl}
+        mapLat={settings.mapLat}
+        mapLng={settings.mapLng}
         phone={settings.phone}
         phoneTurkey={settings.phoneTurkey}
         hoursWeekday={settings.hoursWeekday}
@@ -125,7 +131,6 @@ export function StorefrontApp({
       />
 
       <ProductDetailPanel product={selectedProduct} onClose={() => setSelectedProductId(null)} />
-      <MiniCart onClick={() => setCartOpen(true)} />
       <CartDrawer
         open={cartOpen}
         onOpenChange={setCartOpen}

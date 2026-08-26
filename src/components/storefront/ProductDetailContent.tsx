@@ -16,7 +16,13 @@ const SIZE_GUIDE_ROWS = [
 ];
 
 export function ProductDetailContent({ product, onAdded }: { product: ProductVM; onAdded?: () => void }) {
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  // With only one purchasable size, requiring a click before the CTA
+  // activates just reads as broken — the chip looks the same either way
+  // until you notice the button text changed. Auto-select it instead.
+  const [selectedSize, setSelectedSize] = useState<string | null>(() => {
+    const inStock = product.sizes.filter((s) => s.stock > 0);
+    return inStock.length === 1 ? inStock[0].size : null;
+  });
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const addItem = useCartStore((s) => s.addItem);
