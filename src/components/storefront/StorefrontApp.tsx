@@ -5,7 +5,6 @@ import { TopBar } from "@/components/storefront/TopBar";
 import { FlashSaleBanner } from "@/components/storefront/FlashSaleBanner";
 import { FlashSaleSection } from "@/components/storefront/FlashSaleSection";
 import { Hero, type HeroTag } from "@/components/storefront/Hero";
-import { CategoryShortcuts, type CategoryShortcut } from "@/components/storefront/CategoryShortcuts";
 import { AvailabilityBanner } from "@/components/storefront/AvailabilityBanner";
 import { CategoryNav, type NavCategory } from "@/components/storefront/CategoryNav";
 import { SearchBar } from "@/components/storefront/SearchBar";
@@ -17,7 +16,7 @@ import { FaqSection } from "@/components/storefront/FaqSection";
 import { InstagramCta } from "@/components/storefront/InstagramCta";
 import { SiteFooter } from "@/components/storefront/SiteFooter";
 import { toProductVM } from "@/lib/productViewModel";
-import { totalStock, isOffer } from "@/lib/derived";
+import { totalStock } from "@/lib/derived";
 import { toFa } from "@/lib/format";
 import type { ProductWithRelations } from "@/lib/queries";
 import type { Category, StoreSettings } from "@/generated/prisma";
@@ -68,19 +67,6 @@ export function StorefrontApp({
     [categories]
   );
 
-  const categoryShortcuts: CategoryShortcut[] = useMemo(
-    () => [
-      { key: "offers", label: "تخفیف‌ها", iconKey: "offers", count: products.filter((p) => isOffer(p)).length },
-      ...categories.map((c) => ({
-        key: c.key,
-        label: c.label,
-        iconKey: c.iconKey,
-        count: products.filter((p) => p.categoryId === c.id).length,
-      })),
-    ],
-    [categories, products]
-  );
-
   const heroTags: HeroTag[] = useMemo(() => {
     return products
       .map((p) => ({ p, total: totalStock(p.sizes) }))
@@ -115,7 +101,6 @@ export function StorefrontApp({
           onOpen={setSelectedProductId}
         />
       )}
-      <CategoryShortcuts shortcuts={categoryShortcuts} onSelect={setCategory} />
       <AvailabilityBanner
         showCountdown={settings.showCountdown}
         discountEndsAt={settings.discountEndsAt}
