@@ -22,11 +22,11 @@ describe("stockInfo", () => {
   it("flags zero stock as out of stock", () => {
     expect(stockInfo(0).label).toBe("ناموجود");
   });
-  it("flags low stock (<=3) with the accent color", () => {
-    expect(stockInfo(2).color).toBe("var(--accent)");
+  it("flags low stock (<=3) with a fixed amber, not the theme accent", () => {
+    expect(stockInfo(2).color).toBe("#9c6b12");
   });
   it("uses a different color once stock is plentiful", () => {
-    expect(stockInfo(10).color).not.toBe("var(--accent)");
+    expect(stockInfo(10).color).not.toBe(stockInfo(2).color);
   });
 });
 

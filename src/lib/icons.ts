@@ -44,11 +44,15 @@ export const CUSTOM_ICON_PATHS: Record<string, string> = {
   hoodie: "M8 6Q12 2 16 6L18 8L21 10L21 13L18 11L18 21L6 21L6 11L3 13L3 10L6 8Z M9 15H15",
   pants: "M7 3H17L17.5 21H13.5L12 11L10.5 21H6.5Z M7 6.5H17",
   socks: "M9 3H15V12L20 15Q21 17 19 18L9 18V3Z M9 7H15",
+  // Button-up dress shirt (پیراهن) — collar + sleeves + center placket line,
+  // kept distinct from the plain Lucide "Shirt" icon already used for tshirt.
+  shirt: "M8 4L10 3H14L16 4L16 6L19 8L19 11L16 9.5V20H8V9.5L5 11V8L8 6Z M12 6V19",
 };
 
 /** Curated palette shown in the admin category editor, with Persian labels. */
 export const ICON_OPTIONS: IconOption[] = [
   { key: "jacket", label: "کاپشن" },
+  { key: "shirt", label: "پیراهن" },
   { key: "tshirt", label: "تیشرت" },
   { key: "hoodie", label: "هودی" },
   { key: "pants", label: "شلوار" },

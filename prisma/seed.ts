@@ -8,11 +8,12 @@ const db = new PrismaClient({ adapter });
 
 const categories = [
   { key: "jacket", label: "کاپشن", iconKey: "jacket", sortOrder: 0 },
-  { key: "tshirt", label: "تیشرت", iconKey: "tshirt", sortOrder: 1 },
-  { key: "hoodie", label: "هودی", iconKey: "hoodie", sortOrder: 2 },
-  { key: "pants", label: "شلوار", iconKey: "pants", sortOrder: 3 },
-  { key: "shoes", label: "کفش", iconKey: "shoes", sortOrder: 4 },
-  { key: "socks", label: "جوراب", iconKey: "socks", sortOrder: 5 },
+  { key: "shirt", label: "پیراهن", iconKey: "shirt", sortOrder: 1 },
+  { key: "tshirt", label: "تیشرت", iconKey: "tshirt", sortOrder: 2 },
+  { key: "hoodie", label: "هودی", iconKey: "hoodie", sortOrder: 3 },
+  { key: "pants", label: "شلوار", iconKey: "pants", sortOrder: 4 },
+  { key: "shoes", label: "کفش", iconKey: "shoes", sortOrder: 5 },
+  { key: "socks", label: "جوراب", iconKey: "socks", sortOrder: 6 },
 ];
 
 const products = [

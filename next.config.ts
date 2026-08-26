@@ -29,6 +29,11 @@ const nextConfig: NextConfig = {
     // style (bucket.s3.<region>.arvanstorage.ir) and any custom domain
     // pointed at the bucket.
     remotePatterns: [{ protocol: "https", hostname: "*.arvanstorage.ir" }],
+    // Next 16 only serves quality 75 unless the values it may be asked for
+    // are explicitly allow-listed here. Product photos opt into 90 (see the
+    // `quality` prop on their <Image> tags) for sharper detail than the
+    // default; everything else keeps 75.
+    qualities: [75, 90],
   },
   experimental: {
     serverActions: {
