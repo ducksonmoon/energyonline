@@ -77,7 +77,7 @@ export function CartDrawer({
 
         <div className="flex-1 overflow-y-auto px-4 flex flex-col gap-3">
           {items.length === 0 && (
-            <p className="text-sm text-[var(--ink-soft)] py-8 text-center">سبد شما خالیه.</p>
+            <p className="text-sm text-[var(--ink-soft)] py-8 text-center">سبد خرید شما خالی است.</p>
           )}
           {items.map((item) => {
             const available = isAvailable(item);

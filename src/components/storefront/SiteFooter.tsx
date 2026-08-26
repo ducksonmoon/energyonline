@@ -33,7 +33,7 @@ export function SiteFooter({
             className="mb-3 h-10 w-auto"
           />
           <div className="text-[13px] leading-[1.9] max-w-[240px] text-[rgba(246,242,236,.6)]">
-            یک فروشگاه، موجودی واقعی، بدون تکرار.
+            انتخاب‌شده برای شما، از ترکیه.
           </div>
         </div>
         <div>

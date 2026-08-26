@@ -128,7 +128,7 @@ export function StorefrontApp({
         loaded={loaded}
         gridDensity={settings.gridDensity}
         onOpen={setSelectedProductId}
-        emptyMessage={search.trim() ? "چیزی با این نام پیدا نشد." : "محصولی در این دسته پیدا نشد."}
+        emptyMessage={search.trim() ? "نتیجه‌ای یافت نشد." : "محصولی در این دسته موجود نیست."}
       />
       <FaqSection />
       <InstagramCta instagramHandle={settings.instagramHandle} />
