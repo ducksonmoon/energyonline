@@ -51,6 +51,7 @@ export function ProductDetailContent({ product, onAdded }: { product: ProductVM;
               alt={product.name}
               fill
               sizes="(max-width: 1023px) 94vw, 440px"
+              quality={90}
               className="object-contain"
               priority
             />
@@ -86,7 +87,7 @@ export function ProductDetailContent({ product, onAdded }: { product: ProductVM;
                   border: i === galleryIndex ? "2px solid var(--accent)" : "1px solid var(--line)",
                 }}
               >
-                <Image src={img} alt="" fill sizes="44px" className="object-contain" />
+                <Image src={img} alt="" fill sizes="44px" quality={90} className="object-contain" />
               </button>
             ))}
           </div>

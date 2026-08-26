@@ -83,6 +83,7 @@ export function FlashSaleSection({
                     alt={p.name}
                     fill
                     sizes="(max-width: 640px) 45vw, 260px"
+                    quality={90}
                     className="object-contain"
                   />
                 ) : (

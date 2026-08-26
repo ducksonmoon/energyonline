@@ -11,7 +11,9 @@ import sharp from "sharp";
 sharp.concurrency(1);
 
 const MAX_DIMENSION = 1600;
-const JPEG_QUALITY = 82;
+// Storefront <Image> tags now request quality 90 for product photos, so
+// storing the source at a lower quality would just cap it there anyway.
+const JPEG_QUALITY = 90;
 
 export type ProcessedImage = { buffer: Buffer; contentType: string; ext: string };
 

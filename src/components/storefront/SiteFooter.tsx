@@ -26,9 +26,9 @@ export function SiteFooter({
           <Image
             src="/brand/energie-logo-light.png"
             alt="انرژی"
-            width={140}
-            height={79}
-            className="mb-2.5 h-5 w-auto"
+            width={1984}
+            height={321}
+            className="mb-3 h-10 w-auto"
           />
           <div className="text-[13px] leading-[1.9] max-w-[240px] text-[rgba(246,242,236,.6)]">
             یک فروشگاه، موجودی واقعی، بدون تکرار.

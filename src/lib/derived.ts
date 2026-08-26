@@ -17,11 +17,15 @@ export function stockInfo(total: number): StockInfo {
   }
   if (total <= 3) {
     const label = `${toFa(total)} عدد موجود`;
+    // A fixed amber, not the store's customizable --accent: that color is
+    // picked freely by the admin (often a bright gold) and used here as text
+    // on its own pale tint, which reads as near-invisible regardless of the
+    // shade chosen. A fixed tone keeps this legible no matter the theme.
     return {
       label,
       long: label,
-      color: "var(--accent)",
-      bg: "color-mix(in srgb, var(--accent) 14%, transparent)",
+      color: "#9c6b12",
+      bg: "rgba(196,148,20,.16)",
     };
   }
   const label = `${toFa(total)} عدد موجود`;
