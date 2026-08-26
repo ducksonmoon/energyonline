@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 import { useCartStore } from "@/store/cart";
+import { cartItemCount } from "@/lib/cart";
 
 export function MiniCart({ onClick }: { onClick: () => void }) {
-  const count = useCartStore((s) => s.items.length);
+  const count = useCartStore((s) => cartItemCount(s.items));
 
   return (
     <button

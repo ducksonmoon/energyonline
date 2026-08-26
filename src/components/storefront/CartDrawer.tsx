@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { useCartStore } from "@/store/cart";
-import { formatToman } from "@/lib/format";
+import { cartTotal } from "@/lib/cart";
+import { formatToman, toFa } from "@/lib/format";
 import { getLiveCartStock } from "@/app/actions";
 
 export function CartDrawer({
@@ -22,6 +23,7 @@ export function CartDrawer({
 }) {
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
+  const setQty = useCartStore((s) => s.setQty);
   const [liveStock, setLiveStock] = useState<Record<string, Record<string, number>> | null>(null);
 
   useEffect(() => {
@@ -29,7 +31,21 @@ export function CartDrawer({
     let cancelled = false;
     const productIds = Array.from(new Set(items.map((i) => i.productId)));
     getLiveCartStock(productIds).then((stock) => {
-      if (!cancelled) setLiveStock(stock);
+      if (cancelled) return;
+      setLiveStock(stock);
+      // Self-heal: someone may have bought the last unit in-store since
+      // these lines were added (this cart never reserves stock — a real
+      // purchase only happens when staff confirms over Instagram DM), so
+      // clamp any line down to what's actually left rather than letting
+      // it overstate availability at handoff. A line that's now fully out
+      // of stock is left as-is and shown as unavailable below instead of
+      // being silently removed.
+      for (const item of items) {
+        const available = stock[item.productId]?.[item.size] ?? 0;
+        if (available > 0 && available < item.qty) {
+          setQty(item.id, available, available);
+        }
+      }
     });
     return () => {
       cancelled = true;
@@ -45,7 +61,7 @@ export function CartDrawer({
   }
 
   const availableItems = items.filter(isAvailable);
-  const total = availableItems.reduce((sum, i) => sum + i.price, 0);
+  const total = cartTotal(availableItems);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -76,9 +92,12 @@ export function CartDrawer({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold truncate">{item.name}</div>
-                  <div className="text-xs text-[var(--ink-soft)]">سایز {item.size}</div>
+                  <div className="text-xs text-[var(--ink-soft)]">
+                    سایز {item.size}
+                    {item.qty > 1 && ` · ${toFa(item.qty)} عدد`}
+                  </div>
                   {available ? (
-                    <div className="text-xs font-semibold mt-0.5">{formatToman(item.price)}</div>
+                    <div className="text-xs font-semibold mt-0.5">{formatToman(item.price * item.qty)}</div>
                   ) : (
                     <div className="text-xs font-semibold mt-0.5 text-[var(--brand-red)]">دیگر موجود نیست</div>
                   )}

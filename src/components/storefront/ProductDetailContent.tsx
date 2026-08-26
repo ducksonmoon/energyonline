@@ -25,13 +25,15 @@ export function ProductDetailContent({ product, onAdded }: { product: ProductVM;
 
   function handleAdd() {
     if (!selectedSize) return;
-    addItem({
-      productId: product.id,
-      name: product.name,
-      size: selectedSize,
-      price: product.price,
-      image: product.image,
-    });
+    const stock = product.sizes.find((s) => s.size === selectedSize)?.stock ?? 0;
+    const result = addItem(
+      { productId: product.id, name: product.name, size: selectedSize, price: product.price, image: product.image },
+      stock
+    );
+    if (result === "max-reached") {
+      toast.error(`فقط ${toFa(stock)} عدد از این سایز موجوده — همه‌شون همین الان تو سبد شماست`);
+      return;
+    }
     toast.success("به سبد اضافه شد", { description: `${product.name} — سایز ${selectedSize}` });
     onAdded?.();
   }

@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 import { useCartStore } from "@/store/cart";
+import { cartItemCount } from "@/lib/cart";
 
 export function TopBar({ onCartClick }: { onCartClick: () => void }) {
-  const cartCount = useCartStore((s) => s.items.length);
+  const cartCount = useCartStore((s) => cartItemCount(s.items));
 
   return (
     <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-3.5 border-b border-[var(--line)] bg-[color-mix(in_srgb,var(--bg)_88%,transparent)] backdrop-blur-md">
