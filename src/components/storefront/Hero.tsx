@@ -31,20 +31,17 @@ export function Hero({ heroStockLine, heroTags }: { heroStockLine: string; heroT
       />
       <div className="relative flex flex-col items-center text-center gap-2.5 lg:flex-1 lg:items-start lg:text-right">
         <div className="text-[10.5px] sm:text-[11px] tracking-[.14em] font-bold text-[var(--brand-red)]">
-          همین الان، فقط همینا موجوده
+          جدیدترین انتخاب‌ها
         </div>
         <div className="text-[clamp(22px,4vw,34px)] font-extrabold leading-[1.35] max-w-[480px] [animation:heroWordIn_.8s_cubic-bezier(.16,1,.3,1)_both]">
-          موجودی واقعی، تعداد محدود
-        </div>
-        <div className="text-[13px] sm:text-sm leading-[1.8] text-[var(--ink-soft)] max-w-[420px]">
-          از برندای اورجینال ترکیه؛ هر تیکه فقط یه‌بار میاد، وقتی تموم شد تموم شد.
+          منتخب لباس‌های اورجینال از ترکیه، با تعداد محدود.
         </div>
         <div className="text-[12px] sm:text-[12.5px] text-[var(--ink-soft)]">{heroStockLine}</div>
         <a
           href="#grid"
           className="mt-1.5 inline-flex items-center gap-2 rounded-[3px] bg-[var(--ink)] text-[var(--bg)] font-bold text-sm px-5 py-3 sm:px-[22px] sm:py-3.5 transition-transform active:scale-95 hover:scale-105"
         >
-          دیدن موجودی
+          مشاهده محصولات
           <svg
             width="14"
             height="14"

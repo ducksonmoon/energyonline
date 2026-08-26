@@ -194,7 +194,7 @@ export function ProductDetailContent({ product, onAdded }: { product: ProductVM;
             color: selectedSize ? "var(--bg)" : "var(--ink-soft)",
           }}
         >
-          {selectedSize ? "افزودن به سبد" : "یک سایز انتخاب کن"}
+          {selectedSize ? "افزودن به سبد" : "ابتدا سایز خود را انتخاب کنید"}
         </button>
         <div className="text-center text-[11px] text-[var(--ink-soft)] mt-2.5">فقط موجودی فروشگاه، تعداد محدود</div>
       </div>

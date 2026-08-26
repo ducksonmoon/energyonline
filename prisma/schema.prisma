@@ -73,6 +73,9 @@ model StoreSettings {
   showCountdown   Boolean   @default(true)
   discountEndsAt  DateTime?
   address         String    @default("ساری، خیابان فرهنگ")
+  /// Link shown as "نقشه فروشگاه" in the footer — a Google Maps place/share
+  /// link (short links like maps.app.goo.gl work fine), opened in a new tab.
+  mapUrl          String    @default("https://maps.app.goo.gl/RtA3aCbnWFHJUugn6")
   phone           String    @default("011-33305327")
   /// Landline/mobile for coordinating orders sourced from Turkey (see the "سفارش از ترکیه" section).
   phoneTurkey     String    @default("+90 531 733 2665")

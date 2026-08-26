@@ -66,6 +66,19 @@ export function SettingsForm({ settings }: { settings: StoreSettings }) {
         <Input id="address" name="address" defaultValue={settings.address} required />
       </div>
 
+      <div className="space-y-2">
+        <Label htmlFor="mapUrl">لینک نقشه فروشگاه (گوگل مپ)</Label>
+        <Input
+          id="mapUrl"
+          name="mapUrl"
+          type="url"
+          defaultValue={settings.mapUrl}
+          required
+          dir="ltr"
+          className="text-right"
+        />
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="phone">تلفن فروشگاه</Label>

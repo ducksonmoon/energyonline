@@ -16,14 +16,17 @@ export function stockInfo(total: number): StockInfo {
     return { label: "ناموجود", long: "ناموجود", color: "#a8483c", bg: "rgba(168,72,60,.1)" };
   }
   if (total <= 3) {
-    const label = `${toFa(total)} عدد موجود`;
+    // "label" stays short — it sits inline next to the price on a narrow
+    // product-card row, where the fuller "تنها ..." phrasing wraps badly.
+    // "long" gets the emphasis; it's only used on the product detail page,
+    // which has room for it.
     // A fixed amber, not the store's customizable --accent: that color is
     // picked freely by the admin (often a bright gold) and used here as text
     // on its own pale tint, which reads as near-invisible regardless of the
     // shade chosen. A fixed tone keeps this legible no matter the theme.
     return {
-      label,
-      long: label,
+      label: `${toFa(total)} عدد باقی مانده`,
+      long: `تنها ${toFa(total)} عدد باقی مانده`,
       color: "#9c6b12",
       bg: "rgba(196,148,20,.16)",
     };
