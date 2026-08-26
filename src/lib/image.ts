@@ -1,5 +1,15 @@
 import sharp from "sharp";
 
+// This runs on a 1 vCPU / 2GB VPS that's already documented as tight under
+// load — sharp's default concurrency spins up multiple libvips threads per
+// image, and saveUploadedImages processes every file in a save concurrently
+// (Promise.all), so an admin uploading a few photos at once could run
+// several decode/resize pipelines in parallel and exhaust memory. Capping
+// this to 1 trades a little latency for not risking a native crash, which
+// (unlike a JS exception) no try/catch here can recover from — the request
+// just dies.
+sharp.concurrency(1);
+
 const MAX_DIMENSION = 1600;
 const JPEG_QUALITY = 82;
 

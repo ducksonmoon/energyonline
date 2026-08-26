@@ -141,20 +141,25 @@ export async function createProduct(_prevState: ProductFormState, formData: Form
     return { error: "آپلود تصویر با خطا مواجه شد. دوباره امتحان کن — اگر باز هم نشد، محصول رو بدون تصویر ذخیره کن و بعداً از صفحه ویرایش عکس اضافه کن." };
   }
 
-  await db.product.create({
-    data: {
-      id: productId,
-      name: parsed.data.name,
-      categoryId: parsed.data.categoryId,
-      description: parsed.data.description,
-      basePrice: parsed.data.basePrice,
-      discountPrice: parseOptionalPrice(formData, "discountPrice"),
-      flashPrice: parseOptionalPrice(formData, "flashPrice"),
-      isNew: formData.get("isNew") === "on",
-      sizes: { create: sizes },
-      images: urls.length > 0 ? { create: urls.map((url, i) => ({ url, sortOrder: i })) } : undefined,
-    },
-  });
+  try {
+    await db.product.create({
+      data: {
+        id: productId,
+        name: parsed.data.name,
+        categoryId: parsed.data.categoryId,
+        description: parsed.data.description,
+        basePrice: parsed.data.basePrice,
+        discountPrice: parseOptionalPrice(formData, "discountPrice"),
+        flashPrice: parseOptionalPrice(formData, "flashPrice"),
+        isNew: formData.get("isNew") === "on",
+        sizes: { create: sizes },
+        images: urls.length > 0 ? { create: urls.map((url, i) => ({ url, sortOrder: i })) } : undefined,
+      },
+    });
+  } catch (err) {
+    console.error("Product create failed:", err);
+    return { error: "ذخیره محصول با خطا مواجه شد. دوباره امتحان کن." };
+  }
 
   revalidatePath("/");
   revalidatePath("/admin/products");
@@ -193,39 +198,44 @@ export async function updateProduct(
     return { error: "آپلود تصویر با خطا مواجه شد. دوباره امتحان کن — بقیه تغییرات هنوز ذخیره نشده." };
   }
 
-  await db.product.update({
-    where: { id: productId },
-    data: {
-      name: parsed.data.name,
-      categoryId: parsed.data.categoryId,
-      description: parsed.data.description,
-      basePrice: parsed.data.basePrice,
-      discountPrice: parseOptionalPrice(formData, "discountPrice"),
-      flashPrice: parseOptionalPrice(formData, "flashPrice"),
-      isNew: formData.get("isNew") === "on",
-    },
-  });
+  try {
+    await db.product.update({
+      where: { id: productId },
+      data: {
+        name: parsed.data.name,
+        categoryId: parsed.data.categoryId,
+        description: parsed.data.description,
+        basePrice: parsed.data.basePrice,
+        discountPrice: parseOptionalPrice(formData, "discountPrice"),
+        flashPrice: parseOptionalPrice(formData, "flashPrice"),
+        isNew: formData.get("isNew") === "on",
+      },
+    });
 
-  await db.productSize.deleteMany({ where: { productId } });
-  await db.productSize.createMany({ data: sizes.map((s) => ({ ...s, productId })) });
+    await db.productSize.deleteMany({ where: { productId } });
+    await db.productSize.createMany({ data: sizes.map((s) => ({ ...s, productId })) });
 
-  const removeImageIdsRaw = formData.get("removeImageIds");
-  if (typeof removeImageIdsRaw === "string" && removeImageIdsRaw) {
-    const ids: string[] = JSON.parse(removeImageIdsRaw);
-    if (ids.length > 0) {
-      const images = await db.productImage.findMany({ where: { id: { in: ids }, productId } });
-      await db.productImage.deleteMany({ where: { id: { in: ids } } });
-      for (const img of images) {
-        await deleteUploadedImage(img.url);
+    const removeImageIdsRaw = formData.get("removeImageIds");
+    if (typeof removeImageIdsRaw === "string" && removeImageIdsRaw) {
+      const ids: string[] = JSON.parse(removeImageIdsRaw);
+      if (ids.length > 0) {
+        const images = await db.productImage.findMany({ where: { id: { in: ids }, productId } });
+        await db.productImage.deleteMany({ where: { id: { in: ids } } });
+        for (const img of images) {
+          await deleteUploadedImage(img.url);
+        }
       }
     }
-  }
 
-  if (urls.length > 0) {
-    const existingCount = await db.productImage.count({ where: { productId } });
-    await db.productImage.createMany({
-      data: urls.map((url, i) => ({ productId, url, sortOrder: existingCount + i })),
-    });
+    if (urls.length > 0) {
+      const existingCount = await db.productImage.count({ where: { productId } });
+      await db.productImage.createMany({
+        data: urls.map((url, i) => ({ productId, url, sortOrder: existingCount + i })),
+      });
+    }
+  } catch (err) {
+    console.error("Product update failed:", err);
+    return { error: "ذخیره تغییرات با خطا مواجه شد. دوباره امتحان کن." };
   }
 
   revalidatePath("/");

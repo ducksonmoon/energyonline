@@ -30,6 +30,18 @@ const nextConfig: NextConfig = {
     // pointed at the bucket.
     remotePatterns: [{ protocol: "https", hostname: "*.arvanstorage.ir" }],
   },
+  experimental: {
+    serverActions: {
+      // Next.js's own default here is 1MB, well under the 5MB-per-photo
+      // limit the product form already validates and advertises to
+      // admins — any real photo over ~1MB was hitting this framework-level
+      // cap and crashing with a raw 500 before the product action (and its
+      // own validation/error handling) ever ran. Sized for a handful of
+      // full-size photos in one save, matching nginx's client_max_body_size
+      // for /admin/.
+      bodySizeLimit: "20mb",
+    },
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
