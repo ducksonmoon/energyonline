@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export type HeroProduct = { name: string; image: string | null };
+export type HeroProduct = { name: string; image: string | null; priceFa: string | null };
 
 export function Hero({ heroProducts }: { heroProducts: HeroProduct[] }) {
   return (
@@ -25,45 +25,74 @@ export function Hero({ heroProducts }: { heroProducts: HeroProduct[] }) {
           هم‌اکنون در فروشگاه موجود هستند. برای سفارش‌های خاص نیز کافی‌ست به ما اطلاع دهید تا محصول موردنظرتان را
           مستقیماً برایتان تهیه کنیم.
         </div>
-        <a
-          href="#grid"
-          className="mt-1.5 inline-flex items-center gap-2 rounded-[3px] bg-[var(--ink)] text-[var(--bg)] font-bold text-sm px-5 py-3 sm:px-[22px] sm:py-3.5 transition-transform active:scale-95 hover:scale-105"
-        >
-          مشاهده محصولات
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            style={{ transform: "scaleX(-1)" }}
+        <div className="relative mt-1.5 inline-block">
+          <div
+            className="absolute inset-0 rounded-[3px] translate-x-1.5 translate-y-1.5"
+            style={{ background: "var(--brand-red)" }}
+          />
+          <a
+            href="#grid"
+            className="relative inline-flex items-center gap-2 rounded-[3px] bg-[var(--ink)] text-[var(--bg)] font-bold text-sm px-5 py-3 sm:px-[22px] sm:py-3.5 transition-transform active:scale-95 hover:scale-105"
           >
-            <path d="M5 12h13M13 6l6 6-6 6" />
-          </svg>
-        </a>
+            مشاهده محصولات
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              style={{ transform: "scaleX(-1)" }}
+            >
+              <path d="M5 12h13M13 6l6 6-6 6" />
+            </svg>
+          </a>
+        </div>
       </div>
 
       {/* A real preview of what's actually in the store right now, instead of
           the brand mark (already doing its job in the top bar) blown up large
           on an empty gradient. */}
       {heroProducts.length > 0 && (
-        <div className="mt-5 lg:mt-0 mx-auto w-full max-w-[340px] lg:flex-1 lg:max-w-none flex gap-3 h-[210px] lg:h-[320px]">
-          {heroProducts.map((p) => (
-            <div
-              key={p.name}
-              className={`relative flex-1 rounded-[10px] overflow-hidden flex items-center justify-center text-[var(--ink-soft)] ${p.image ? "bg-white" : "bg-[var(--bg-alt)]"}`}
-            >
-              {p.image ? (
-                <Image src={p.image} alt={p.name} fill sizes="(max-width: 1023px) 45vw, 320px" className="object-contain p-3" />
-              ) : (
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-50">
-                  <path d="M9 4h6l1 2h3a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h3z" />
-                  <path d="M9 4a3 3 0 006 0" />
-                </svg>
-              )}
-            </div>
-          ))}
+        <div className="relative mt-8 lg:mt-0 mx-auto w-full max-w-[340px] lg:flex-1 lg:max-w-none h-[230px] lg:h-[340px]">
+          <div
+            className="pointer-events-none absolute -inset-3 rounded-full border border-dashed hidden sm:block"
+            style={{ borderColor: "var(--line)" }}
+          />
+          <div className="relative flex gap-3 h-full">
+            {heroProducts.map((p, i) => (
+              <div
+                key={p.name}
+                className={`relative flex-1 rounded-2xl overflow-hidden flex items-center justify-center text-[var(--ink-soft)] border border-[var(--line)] ${p.image ? "bg-white" : "bg-[var(--bg-alt)]"}`}
+                style={{
+                  transform: i === 0 ? "rotate(-3deg)" : "rotate(3deg)",
+                  boxShadow: "0 18px 40px -14px rgba(20,19,17,.22)",
+                }}
+              >
+                {p.image ? (
+                  <Image src={p.image} alt={p.name} fill sizes="(max-width: 1023px) 45vw, 320px" className="object-contain p-3" />
+                ) : (
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-50">
+                    <path d="M9 4h6l1 2h3a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h3z" />
+                    <path d="M9 4a3 3 0 006 0" />
+                  </svg>
+                )}
+                {i === 0 && p.priceFa && (
+                  <div
+                    className="absolute -top-2.5 -left-2.5 rounded-lg text-white text-[13px] font-bold px-2.5 py-1.5"
+                    style={{
+                      fontFamily: "var(--font-lalezar)",
+                      background: "var(--brand-red)",
+                      transform: "rotate(-6deg)",
+                      boxShadow: "0 8px 18px -6px rgba(181,51,58,.5)",
+                    }}
+                  >
+                    {p.priceFa}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

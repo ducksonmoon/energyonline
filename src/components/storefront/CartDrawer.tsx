@@ -136,41 +136,57 @@ export function CartDrawer({
             </div>
 
             {salesPaused ? (
-              <div className="rounded-md border border-[var(--line)] bg-[var(--bg-alt)] p-4 text-center">
-                <div className="w-9 h-9 mx-auto mb-2.5 rounded-full bg-[var(--bg)] flex items-center justify-center">
+              <div className="relative rounded-2xl border border-[var(--line)] bg-[var(--bg-alt)] p-5 text-center">
+                <div
+                  className="w-9.5 h-9.5 mx-auto mb-3 rounded-full flex items-center justify-center"
+                  style={{ background: "rgba(181,51,58,.1)" }}
+                >
                   <svg
                     width="18"
                     height="18"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="var(--ink-soft)"
+                    stroke="var(--brand-red)"
                     strokeWidth="1.6"
                   >
                     <circle cx="12" cy="12" r="9" />
                     <path d="M12 8v4l2.5 2.5" strokeLinecap="round" />
                   </svg>
                 </div>
-                <p className="text-xs text-[var(--ink)] leading-7 whitespace-pre-line">{salesPausedMessage}</p>
+                <p className="text-xs text-[var(--ink)] leading-7 whitespace-pre-line mb-4">{salesPausedMessage}</p>
                 {instagramHandle && (
-                  <a
-                    href={`https://instagram.com/${instagramHandle}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] text-[var(--bg)] hover:opacity-90 py-2.5 text-sm font-bold"
-                  >
-                    پیام در اینستاگرام <span dir="ltr">@{instagramHandle}</span>
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.2"
-                      style={{ transform: "scaleX(-1)" }}
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <a
+                      href={`https://instagram.com/${instagramHandle}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="relative inline-flex items-center gap-2 rounded-full bg-[var(--ink)] text-[var(--bg)] px-5 py-2.5 text-sm font-bold"
                     >
-                      <path d="M5 12h13M13 6l6 6-6 6" />
-                    </svg>
-                  </a>
+                      <span
+                        className="absolute inset-0 rounded-full -z-10 translate-x-1 translate-y-1"
+                        style={{ background: "var(--brand-red)" }}
+                      />
+                      پیام در اینستاگرام
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        style={{ transform: "scaleX(-1)" }}
+                      >
+                        <path d="M5 12h13M13 6l6 6-6 6" />
+                      </svg>
+                    </a>
+                    <span
+                      dir="ltr"
+                      className="inline-flex items-center h-9 px-3.5 rounded-full bg-[var(--bg)] text-xs text-[var(--ink-soft)]"
+                      style={{ boxShadow: "inset 0 0 0 1px var(--line)" }}
+                    >
+                      @{instagramHandle}
+                    </span>
+                  </div>
                 )}
               </div>
             ) : (
