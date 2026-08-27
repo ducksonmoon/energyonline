@@ -71,11 +71,13 @@ export function StorefrontApp({
   }, [categories, products, productsVM]);
 
   // A real preview of what's actually buyable, not a decorative graphic —
-  // the first couple of products, same order as the grid.
-  const heroProducts: HeroProduct[] = useMemo(
-    () => products.slice(0, 2).map((p) => ({ name: p.name, image: p.images[0]?.url ?? null })),
-    [products]
-  );
+  // admin-picked products first (featuredInHero), filled out with the
+  // regular catalog order when fewer than 2 are picked.
+  const heroProducts: HeroProduct[] = useMemo(() => {
+    const featured = products.filter((p) => p.featuredInHero);
+    const rest = products.filter((p) => !p.featuredInHero);
+    return [...featured, ...rest].slice(0, 2).map((p) => ({ name: p.name, image: p.images[0]?.url ?? null }));
+  }, [products]);
 
   const selectedProduct = selectedProductId ? productsVM.find((p) => p.id === selectedProductId) ?? null : null;
 

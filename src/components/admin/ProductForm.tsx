@@ -137,6 +137,18 @@ export function ProductForm({
                 </Label>
                 <Switch id="isNew" name="isNew" defaultChecked={product?.isNew} disabled={pending} />
               </div>
+
+              <div className="flex items-center justify-between rounded-lg border px-3 py-2.5">
+                <Label htmlFor="featuredInHero" className="cursor-pointer">
+                  نمایش در صفحه اصلی (هدر سایت)
+                </Label>
+                <Switch
+                  id="featuredInHero"
+                  name="featuredInHero"
+                  defaultChecked={product?.featuredInHero}
+                  disabled={pending}
+                />
+              </div>
             </CardContent>
           </Card>
 

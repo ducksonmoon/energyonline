@@ -26,6 +26,10 @@ model Product {
   discountPrice Int?
   flashPrice    Int?
   isNew         Boolean        @default(false)
+  /// Manually picked for the homepage hero's 2-up product preview. When
+  /// fewer than 2 products are featured, the hero fills the rest from the
+  /// regular catalog order — see heroProducts in StorefrontApp.tsx.
+  featuredInHero Boolean       @default(false)
   sortOrder     Int            @default(0)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt

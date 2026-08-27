@@ -152,6 +152,7 @@ export async function createProduct(_prevState: ProductFormState, formData: Form
         discountPrice: parseOptionalPrice(formData, "discountPrice"),
         flashPrice: parseOptionalPrice(formData, "flashPrice"),
         isNew: formData.get("isNew") === "on",
+        featuredInHero: formData.get("featuredInHero") === "on",
         sizes: { create: sizes },
         images: urls.length > 0 ? { create: urls.map((url, i) => ({ url, sortOrder: i })) } : undefined,
       },
@@ -209,6 +210,7 @@ export async function updateProduct(
         discountPrice: parseOptionalPrice(formData, "discountPrice"),
         flashPrice: parseOptionalPrice(formData, "flashPrice"),
         isNew: formData.get("isNew") === "on",
+        featuredInHero: formData.get("featuredInHero") === "on",
       },
     });
 
