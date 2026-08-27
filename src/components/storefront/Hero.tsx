@@ -61,22 +61,29 @@ export function Hero({ heroProducts }: { heroProducts: HeroProduct[] }) {
           />
           <div className="relative flex gap-3 h-full">
             {heroProducts.map((p, i) => (
+              // The rotated card and its price tag need separate boxes: the
+              // photo's rounded corners must clip with overflow-hidden, but
+              // that same overflow-hidden would clip the tag's deliberate
+              // negative offset — so the tag sits on this unclipped
+              // wrapper, not inside the clipped one.
               <div
                 key={p.name}
-                className={`relative flex-1 rounded-2xl overflow-hidden flex items-center justify-center text-[var(--ink-soft)] border border-[var(--line)] ${p.image ? "bg-white" : "bg-[var(--bg-alt)]"}`}
-                style={{
-                  transform: i === 0 ? "rotate(-3deg)" : "rotate(3deg)",
-                  boxShadow: "0 18px 40px -14px rgba(20,19,17,.22)",
-                }}
+                className="relative flex-1"
+                style={{ transform: i === 0 ? "rotate(-3deg)" : "rotate(3deg)" }}
               >
-                {p.image ? (
-                  <Image src={p.image} alt={p.name} fill sizes="(max-width: 1023px) 45vw, 320px" className="object-contain p-3" />
-                ) : (
-                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-50">
-                    <path d="M9 4h6l1 2h3a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h3z" />
-                    <path d="M9 4a3 3 0 006 0" />
-                  </svg>
-                )}
+                <div
+                  className={`relative w-full h-full rounded-2xl overflow-hidden flex items-center justify-center text-[var(--ink-soft)] border border-[var(--line)] ${p.image ? "bg-white" : "bg-[var(--bg-alt)]"}`}
+                  style={{ boxShadow: "0 18px 40px -14px rgba(20,19,17,.22)" }}
+                >
+                  {p.image ? (
+                    <Image src={p.image} alt={p.name} fill sizes="(max-width: 1023px) 45vw, 320px" className="object-contain p-3" />
+                  ) : (
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-50">
+                      <path d="M9 4h6l1 2h3a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h3z" />
+                      <path d="M9 4a3 3 0 006 0" />
+                    </svg>
+                  )}
+                </div>
                 {i === 0 && p.priceFa && (
                   <div
                     className="absolute -top-2.5 -left-2.5 rounded-lg text-white text-[13px] font-bold px-2.5 py-1.5"
