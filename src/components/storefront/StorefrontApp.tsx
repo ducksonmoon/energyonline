@@ -16,6 +16,8 @@ import { FaqSection } from "@/components/storefront/FaqSection";
 import { InstagramCta } from "@/components/storefront/InstagramCta";
 import { SiteFooter } from "@/components/storefront/SiteFooter";
 import { toProductVM } from "@/lib/productViewModel";
+import { effectivePrice } from "@/lib/derived";
+import { formatToman } from "@/lib/format";
 import type { ProductWithRelations } from "@/lib/queries";
 import type { Category, StoreSettings } from "@/generated/prisma";
 
@@ -76,8 +78,12 @@ export function StorefrontApp({
   const heroProducts: HeroProduct[] = useMemo(() => {
     const featured = products.filter((p) => p.featuredInHero);
     const rest = products.filter((p) => !p.featuredInHero);
-    return [...featured, ...rest].slice(0, 2).map((p) => ({ name: p.name, image: p.images[0]?.url ?? null }));
-  }, [products]);
+    return [...featured, ...rest].slice(0, 2).map((p) => ({
+      name: p.name,
+      image: p.images[0]?.url ?? null,
+      priceFa: formatToman(effectivePrice(p, flashActive)),
+    }));
+  }, [products, flashActive]);
 
   const selectedProduct = selectedProductId ? productsVM.find((p) => p.id === selectedProductId) ?? null : null;
 
