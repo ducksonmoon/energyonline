@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export function SiteFooter({
   address,
   mapUrl,
@@ -29,13 +27,28 @@ export function SiteFooter({
     <div className="bg-[var(--ink)] text-[var(--bg)] px-5 pt-14 pb-6.5">
       <div className="max-w-[1280px] mx-auto grid gap-9" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))" }}>
         <div>
-          <Image
-            src="/brand/energie-logo-light.png"
-            alt="انرژی"
-            width={1984}
-            height={321}
-            className="mb-3 h-10 w-auto"
-          />
+          {/* Same Persian wordmark as the top bar (not the Latin "ENERGIE"
+              logo file), so the brand doesn't switch scripts between header
+              and footer. */}
+          <div className="flex items-center gap-1.5 mb-3">
+            <span
+              className="text-2xl font-bold tracking-wide -skew-x-[8deg] inline-block"
+              style={{ fontFamily: "var(--font-lalezar)" }}
+            >
+              انرژی
+            </span>
+            <svg width="22" height="16" viewBox="0 0 20 14">
+              <ellipse cx="10" cy="7" rx="9" ry="6.5" fill="var(--brand-red)" />
+              <path
+                d="M13 2.5L6 7l7 4.5"
+                stroke="var(--accent)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          </div>
           <div className="text-[13px] leading-[1.9] max-w-[240px] text-[rgba(246,242,236,.6)]">
             انتخاب‌شده برای شما، از ترکیه.
           </div>

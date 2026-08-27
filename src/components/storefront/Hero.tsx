@@ -1,24 +1,8 @@
-"use client";
+import Image from "next/image";
 
-import { useState, type MouseEvent } from "react";
-import { CategoryIcon } from "@/components/storefront/CategoryIcon";
+export type HeroProduct = { name: string; image: string | null };
 
-export type HeroTag = { catLabel: string; stockFa: string; iconKey: string };
-
-const TAG_POSITIONS = [
-  { className: "top-[4%] right-[2%] -rotate-[8deg]", anim: "animate-[floatA_4.5s_ease-in-out_infinite]" },
-  { className: "bottom-[6%] left-[2%] rotate-[7deg]", anim: "animate-[floatB_5.5s_ease-in-out_infinite_.3s]" },
-  { className: "top-[8%] left-[6%] rotate-[5deg]", anim: "animate-[floatA_5s_ease-in-out_infinite_.6s]" },
-];
-
-export function Hero({ heroTags }: { heroTags: HeroTag[] }) {
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  function handleMove(e: MouseEvent<HTMLDivElement>) {
-    const r = e.currentTarget.getBoundingClientRect();
-    setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
-  }
-
+export function Hero({ heroProducts }: { heroProducts: HeroProduct[] }) {
   return (
     <div className="relative px-5 pt-8 pb-2 sm:pt-11 sm:pb-8 max-w-[1280px] mx-auto lg:flex lg:items-center lg:gap-12 xl:gap-20">
       <div
@@ -60,72 +44,28 @@ export function Hero({ heroTags }: { heroTags: HeroTag[] }) {
         </a>
       </div>
 
-      <div
-        onMouseMove={handleMove}
-        onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-        className="mt-3 lg:mt-0 mx-auto w-full max-w-[340px] h-[210px] lg:flex-1 lg:max-w-none lg:h-[320px] relative"
-        style={{ perspective: "1200px" }}
-      >
-        <div
-          className="absolute inset-x-[6%] inset-y-[4%] rounded-[10px] overflow-hidden"
-          style={{
-            background:
-              "linear-gradient(135deg, color-mix(in srgb, var(--brand-red) 6%, var(--bg-alt)), color-mix(in srgb, var(--accent) 10%, var(--bg-alt)))",
-            backgroundImage:
-              "radial-gradient(var(--line) 1.4px, transparent 1.4px), linear-gradient(135deg, color-mix(in srgb, var(--brand-red) 6%, var(--bg-alt)), color-mix(in srgb, var(--accent) 10%, var(--bg-alt)))",
-            backgroundSize: "13px 13px, 100% 100%",
-          }}
-        >
-          <div
-            className="absolute -top-1/3 -left-1/4 w-2/3 h-2/3 rounded-full opacity-50 blur-3xl"
-            style={{ background: "var(--accent)" }}
-          />
-          <div
-            className="absolute -bottom-1/3 -right-1/4 w-1/2 h-1/2 rounded-full opacity-30 blur-3xl"
-            style={{ background: "var(--brand-red)" }}
-          />
-        </div>
-        <div
-          className="absolute inset-0 transition-transform duration-300 ease-out"
-          style={{
-            transformStyle: "preserve-3d",
-            transform: `rotateY(${tilt.x * 16}deg) rotateX(${-tilt.y * 16}deg)`,
-          }}
-        >
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[104px] h-[104px] rounded-full flex items-center justify-center [animation:floatDisc_5s_ease-in-out_infinite]"
-            style={{
-              background: "radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--brand-red) 88%, white), var(--brand-red))",
-              boxShadow: "0 16px 32px rgba(0,0,0,.2)",
-            }}
-          >
-            <svg width="72%" viewBox="0 0 20 14" className="[animation:arrowShuttle_2.6s_ease-in-out_infinite]">
-              <path
-                d="M13 2.5L6 7l7 4.5"
-                stroke="var(--accent)"
-                strokeWidth="3.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            </svg>
-          </div>
-          {heroTags.map((t, i) => (
+      {/* A real preview of what's actually in the store right now, instead of
+          the brand mark (already doing its job in the top bar) blown up large
+          on an empty gradient. */}
+      {heroProducts.length > 0 && (
+        <div className="mt-5 lg:mt-0 mx-auto w-full max-w-[340px] lg:flex-1 lg:max-w-none flex gap-3 h-[210px] lg:h-[320px]">
+          {heroProducts.map((p) => (
             <div
-              key={t.catLabel + i}
-              className={`absolute flex items-center gap-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--bg)] px-2 py-1.5 z-[3] ${TAG_POSITIONS[i]?.className ?? ""} ${TAG_POSITIONS[i]?.anim ?? ""}`}
-              style={{ boxShadow: "0 10px 20px rgba(0,0,0,.14)" }}
+              key={p.name}
+              className={`relative flex-1 rounded-[10px] overflow-hidden flex items-center justify-center text-[var(--ink-soft)] ${p.image ? "bg-white" : "bg-[var(--bg-alt)]"}`}
             >
-              <div className="absolute -top-[4px] right-3 w-2 h-2 rounded-full bg-[var(--bg)] border-2 border-[var(--line)]" />
-              <CategoryIcon iconKey={t.iconKey} size={14} className="text-[var(--ink)]" />
-              <div>
-                <div className="text-[10px] font-bold">{t.catLabel}</div>
-                <div className="text-[9px] font-bold text-[var(--brand-red)]">{t.stockFa}</div>
-              </div>
+              {p.image ? (
+                <Image src={p.image} alt={p.name} fill sizes="(max-width: 1023px) 45vw, 320px" className="object-contain p-3" />
+              ) : (
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" className="opacity-50">
+                  <path d="M9 4h6l1 2h3a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h3z" />
+                  <path d="M9 4a3 3 0 006 0" />
+                </svg>
+              )}
             </div>
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
