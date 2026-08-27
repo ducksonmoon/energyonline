@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductById, getStoreSettings } from "@/lib/queries";
@@ -75,24 +76,8 @@ export default async function ProductPage({ params }: PageProps<"/product/[id]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-[var(--line)]">
-        <Link href="/" className="flex items-center gap-1.5">
-          <span
-            className="text-xl font-bold tracking-wide -skew-x-[8deg] inline-block"
-            style={{ fontFamily: "var(--font-lalezar)" }}
-          >
-            انرژی
-          </span>
-          <svg width="18" height="13" viewBox="0 0 20 14">
-            <ellipse cx="10" cy="7" rx="9" ry="6.5" fill="var(--brand-red)" />
-            <path
-              d="M13 2.5L6 7l7 4.5"
-              stroke="var(--accent)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-            />
-          </svg>
+        <Link href="/" className="flex items-center">
+          <Image src="/brand/energie-logo-dark.png" alt="انرژی" width={1984} height={321} className="h-9 w-auto" />
         </Link>
         <Link href="/" className="text-xs text-[var(--ink-soft)] underline underline-offset-2">
           بازگشت به فروشگاه
