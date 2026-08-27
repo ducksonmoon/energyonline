@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "@/components/storefront/TopBar";
 import { FlashSaleBanner } from "@/components/storefront/FlashSaleBanner";
 import { FlashSaleSection } from "@/components/storefront/FlashSaleSection";
-import { Hero, type HeroTag } from "@/components/storefront/Hero";
+import { Hero, type HeroProduct } from "@/components/storefront/Hero";
+import { TrustStrip } from "@/components/storefront/TrustStrip";
 import { AvailabilityBanner } from "@/components/storefront/AvailabilityBanner";
 import { CategoryNav, type NavCategory } from "@/components/storefront/CategoryNav";
 import { SearchBar } from "@/components/storefront/SearchBar";
@@ -15,8 +16,6 @@ import { FaqSection } from "@/components/storefront/FaqSection";
 import { InstagramCta } from "@/components/storefront/InstagramCta";
 import { SiteFooter } from "@/components/storefront/SiteFooter";
 import { toProductVM } from "@/lib/productViewModel";
-import { totalStock } from "@/lib/derived";
-import { toFa } from "@/lib/format";
 import type { ProductWithRelations } from "@/lib/queries";
 import type { Category, StoreSettings } from "@/generated/prisma";
 
@@ -71,14 +70,12 @@ export function StorefrontApp({
     ];
   }, [categories, products, productsVM]);
 
-  const heroTags: HeroTag[] = useMemo(() => {
-    return products
-      .map((p) => ({ p, total: totalStock(p.sizes) }))
-      .filter((x) => x.total > 0)
-      .sort((a, b) => a.total - b.total)
-      .slice(0, 3)
-      .map(({ p, total }) => ({ catLabel: p.category.label, stockFa: `${toFa(total)} عدد`, iconKey: p.category.key }));
-  }, [products]);
+  // A real preview of what's actually buyable, not a decorative graphic —
+  // the first couple of products, same order as the grid.
+  const heroProducts: HeroProduct[] = useMemo(
+    () => products.slice(0, 2).map((p) => ({ name: p.name, image: p.images[0]?.url ?? null })),
+    [products]
+  );
 
   const selectedProduct = selectedProductId ? productsVM.find((p) => p.id === selectedProductId) ?? null : null;
 
@@ -88,9 +85,10 @@ export function StorefrontApp({
       style={{ ["--accent" as string]: settings.accentColor }}
     >
       {flashActive && <FlashSaleBanner endsAt={settings.flashSaleEndsAt} bannerText={settings.flashSaleBannerText} />}
-      <TopBar onCartClick={() => setCartOpen(true)} />
+      <TopBar onCartClick={() => setCartOpen(true)} instagramHandle={settings.instagramHandle} />
 
-      <Hero heroTags={heroTags} />
+      <Hero heroProducts={heroProducts} />
+      <TrustStrip />
       {flashActive && (
         <FlashSaleSection
           endsAt={settings.flashSaleEndsAt}
