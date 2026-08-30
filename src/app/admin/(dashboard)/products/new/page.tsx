@@ -23,6 +23,7 @@ export default async function NewProductPage({ searchParams }: PageProps<"/admin
         flashPrice: sourceProduct.flashPrice,
         isNew: sourceProduct.isNew,
         featuredInHero: false,
+        sizes: sourceProduct.sizes.map((s) => s.size),
       }
     : undefined;
 
@@ -31,7 +32,7 @@ export default async function NewProductPage({ searchParams }: PageProps<"/admin
       <div>
         <h1 className="text-2xl font-bold">محصول جدید</h1>
         <p className="text-sm text-muted-foreground">
-          {sourceProduct ? `کپی از «${sourceProduct.name}» — عکس و سایز/موجودی رو خودت وارد کن` : "یک محصول تازه به فروشگاه اضافه کن"}
+          {sourceProduct ? `کپی از «${sourceProduct.name}» — عکس و موجودی رو خودت وارد کن` : "یک محصول تازه به فروشگاه اضافه کن"}
         </p>
       </div>
       <ProductForm categories={categories} action={createProduct} initialValues={initialValues} submitLabel="ایجاد محصول" />

@@ -18,9 +18,11 @@ import type { ProductWithRelations } from "@/lib/queries";
 
 type SizeRow = { size: string; stock: number };
 
-/** The text/price/toggle fields worth carrying into a new product duplicated
- * from an existing one — never sizes/stock (a new batch's real counts) or
- * photos (would otherwise share the same storage files as the original). */
+/** The fields worth carrying into a new product duplicated from an existing
+ * one. Size LABELS come along (the same batch is usually sized the same
+ * way) but never stock counts, and never photos — a new batch has its own
+ * real counts, and copying image records would point two products at the
+ * same storage files. */
 export type ProductInitialValues = {
   name: string;
   categoryId: string;
@@ -30,6 +32,7 @@ export type ProductInitialValues = {
   flashPrice: number | null;
   isNew: boolean;
   featuredInHero: boolean;
+  sizes: string[];
 };
 
 export function ProductForm({
@@ -48,7 +51,8 @@ export function ProductForm({
   const values = product ?? initialValues;
   const [state, formAction, pending] = useActionState<ProductFormState, FormData>(action, undefined);
   const [sizes, setSizes] = useState<SizeRow[]>(
-    product?.sizes.map((s) => ({ size: s.size, stock: s.stock })) ?? [{ size: "", stock: 0 }]
+    product?.sizes.map((s) => ({ size: s.size, stock: s.stock })) ??
+      initialValues?.sizes.map((size) => ({ size, stock: 0 })) ?? [{ size: "", stock: 0 }]
   );
   const [removedImageIds, setRemovedImageIds] = useState<string[]>([]);
   const [categoryId, setCategoryId] = useState(values?.categoryId ?? categories[0]?.id ?? "");
