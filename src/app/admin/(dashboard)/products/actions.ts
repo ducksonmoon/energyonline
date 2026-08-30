@@ -16,7 +16,9 @@ const sizeArraySchema = z.array(z.object({ size: z.string().min(1), stock: z.coe
 const baseSchema = z.object({
   name: z.string().min(1, "نام محصول را وارد کنید"),
   categoryId: z.string().min(1, "دسته‌بندی را انتخاب کنید"),
-  description: z.string().min(1, "توضیحات را وارد کنید"),
+  // Optional: some inventory (a plain brand tee, an unlabeled surplus item)
+  // has nothing worth writing beyond the name and photos.
+  description: z.string(),
   basePrice: z.coerce.number().int().min(0, "قیمت نامعتبر است"),
   sizes: z.string().min(1),
 });

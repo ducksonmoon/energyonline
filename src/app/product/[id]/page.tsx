@@ -55,7 +55,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[id]">
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description,
+    description: product.description || `${product.name} — خرید از فروشگاه انرژی`,
     category: product.category.label,
     image: product.images.map((i) => absoluteUrl(i.url)),
     offers: {

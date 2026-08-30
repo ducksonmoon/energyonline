@@ -127,8 +127,10 @@ export function ProductForm({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">توضیحات</Label>
-                <Textarea id="description" name="description" defaultValue={product?.description} required rows={4} disabled={pending} />
+                <Label htmlFor="description">
+                  توضیحات <span className="text-muted-foreground font-normal">(اختیاری)</span>
+                </Label>
+                <Textarea id="description" name="description" defaultValue={product?.description} rows={4} disabled={pending} />
               </div>
 
               <div className="flex items-center justify-between rounded-lg border px-3 py-2.5">
