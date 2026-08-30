@@ -70,6 +70,12 @@ export default async function AdminProductsPage() {
                     >
                       ویرایش
                     </Link>
+                    <Link
+                      href={`/admin/products/new?from=${p.id}`}
+                      className={buttonVariants({ variant: "outline", size: "sm" })}
+                    >
+                      کپی
+                    </Link>
                     <DeleteProductButton productId={p.id} productName={p.name} />
                   </div>
                 </div>
@@ -127,6 +133,12 @@ export default async function AdminProductsPage() {
                         <div className="flex items-center gap-1">
                           <Link href={`/admin/products/${p.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
                             ویرایش
+                          </Link>
+                          <Link
+                            href={`/admin/products/new?from=${p.id}`}
+                            className={buttonVariants({ variant: "outline", size: "sm" })}
+                          >
+                            کپی
                           </Link>
                           <DeleteProductButton productId={p.id} productName={p.name} />
                         </div>
