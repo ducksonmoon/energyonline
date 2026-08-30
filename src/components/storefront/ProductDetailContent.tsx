@@ -125,7 +125,9 @@ export function ProductDetailContent({ product, onAdded }: { product: ProductVM;
           {product.stockLabelLong}
         </div>
 
-        <div className="text-sm leading-[1.9] text-[var(--ink-soft)] mb-6">{product.description}</div>
+        {product.description.trim() && (
+          <div className="text-sm leading-[1.9] text-[var(--ink-soft)] mb-6">{product.description}</div>
+        )}
 
         <div className="flex items-center justify-between mb-2.5">
           <div className="text-[13px] font-semibold">سایز</div>

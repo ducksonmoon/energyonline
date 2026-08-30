@@ -18,23 +18,40 @@ import type { ProductWithRelations } from "@/lib/queries";
 
 type SizeRow = { size: string; stock: number };
 
+/** The text/price/toggle fields worth carrying into a new product duplicated
+ * from an existing one — never sizes/stock (a new batch's real counts) or
+ * photos (would otherwise share the same storage files as the original). */
+export type ProductInitialValues = {
+  name: string;
+  categoryId: string;
+  description: string;
+  basePrice: number;
+  discountPrice: number | null;
+  flashPrice: number | null;
+  isNew: boolean;
+  featuredInHero: boolean;
+};
+
 export function ProductForm({
   categories,
   action,
   product,
+  initialValues,
   submitLabel,
 }: {
   categories: { id: string; label: string }[];
   action: (prevState: ProductFormState, formData: FormData) => Promise<ProductFormState>;
   product?: ProductWithRelations;
+  initialValues?: ProductInitialValues;
   submitLabel: string;
 }) {
+  const values = product ?? initialValues;
   const [state, formAction, pending] = useActionState<ProductFormState, FormData>(action, undefined);
   const [sizes, setSizes] = useState<SizeRow[]>(
     product?.sizes.map((s) => ({ size: s.size, stock: s.stock })) ?? [{ size: "", stock: 0 }]
   );
   const [removedImageIds, setRemovedImageIds] = useState<string[]>([]);
-  const [categoryId, setCategoryId] = useState(product?.categoryId ?? categories[0]?.id ?? "");
+  const [categoryId, setCategoryId] = useState(values?.categoryId ?? categories[0]?.id ?? "");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [newImages, setNewImages] = useState<File[]>([]);
@@ -101,7 +118,7 @@ export function ProductForm({
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">نام محصول</Label>
-                <Input id="name" name="name" defaultValue={product?.name} required disabled={pending} />
+                <Input id="name" name="name" defaultValue={values?.name} required disabled={pending} />
               </div>
 
               <div className="space-y-2">
@@ -127,15 +144,17 @@ export function ProductForm({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">توضیحات</Label>
-                <Textarea id="description" name="description" defaultValue={product?.description} required rows={4} disabled={pending} />
+                <Label htmlFor="description">
+                  توضیحات <span className="text-muted-foreground font-normal">(اختیاری)</span>
+                </Label>
+                <Textarea id="description" name="description" defaultValue={values?.description} rows={4} disabled={pending} />
               </div>
 
               <div className="flex items-center justify-between rounded-lg border px-3 py-2.5">
                 <Label htmlFor="isNew" className="cursor-pointer">
                   نشان «تازه رسیده»
                 </Label>
-                <Switch id="isNew" name="isNew" defaultChecked={product?.isNew} disabled={pending} />
+                <Switch id="isNew" name="isNew" defaultChecked={values?.isNew} disabled={pending} />
               </div>
 
               <div className="flex items-center justify-between rounded-lg border px-3 py-2.5">
@@ -145,7 +164,7 @@ export function ProductForm({
                 <Switch
                   id="featuredInHero"
                   name="featuredInHero"
-                  defaultChecked={product?.featuredInHero}
+                  defaultChecked={values?.featuredInHero}
                   disabled={pending}
                 />
               </div>
@@ -161,14 +180,14 @@ export function ProductForm({
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="basePrice">قیمت پایه</Label>
-                  <PriceInput id="basePrice" name="basePrice" defaultValue={product?.basePrice} required />
+                  <PriceInput id="basePrice" name="basePrice" defaultValue={values?.basePrice} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="discountPrice">قیمت با تخفیف</Label>
                   <PriceInput
                     id="discountPrice"
                     name="discountPrice"
-                    defaultValue={product?.discountPrice ?? undefined}
+                    defaultValue={values?.discountPrice ?? undefined}
                     placeholder="بدون تخفیف"
                   />
                 </div>
@@ -179,7 +198,7 @@ export function ProductForm({
                 <PriceInput
                   id="flashPrice"
                   name="flashPrice"
-                  defaultValue={product?.flashPrice ?? undefined}
+                  defaultValue={values?.flashPrice ?? undefined}
                   placeholder="خارج از روز ویژه"
                 />
                 <p className="text-xs text-muted-foreground">
